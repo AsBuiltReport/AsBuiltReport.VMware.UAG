@@ -208,7 +208,7 @@
         #                     UAG General Info Edge Service Settings                                  #
         #---------------------------------------------------------------------------------------------#
         
-        section -Style Heading1 'Unified Access Gateway General Settings' {
+        section -Style Heading1 "Unified Access Gateway $($UAGServer) General Settings" {
         # Generate report if connection to AppVolumes Manager General Information is successful
             if ($EdgeServiceSettings) {
                 section -Style Heading2 'Edge Service Settings' {
@@ -960,7 +960,7 @@
                 #---------------------------------------------------------------------------------------------#
                 #                            Kerberos Realm Settings                                           #
                 #---------------------------------------------------------------------------------------------#
-                if ($KerberosRealms) {
+                if ($KerberosRealms.kerberosRealmSettingsList) {
                     section -Style Heading3 'Kerberos Realm Settings' {
                         foreach($KerberosRealm in $KerberosRealms.kerberosRealmSettingsList) {
                             foreach ($KerberosRealmkdcHostNameList in $KerberosRealm.kdcHostNameList) {

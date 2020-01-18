@@ -8,7 +8,11 @@
         "ShowFaultSummary": true
     },
     "InfoLevel": {
-        "_comment_": "0 = Disabled, 1 = Summary, 2 = Detailed, 3 = Adv Detailed"
-        
+        "_comment_": "0 = Disabled, 1 = Summary, 2 = Detailed, 3 = Adv Detailed",
+        "UEM": {
+            "EdgeServiceSettings": 3, 
+			"Horizon": 3,
+            "AdvancedSettings": 3
+        } 
     }
 }

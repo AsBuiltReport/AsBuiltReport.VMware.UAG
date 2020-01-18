@@ -43,7 +43,22 @@ All report settings can then be configured via the JSON file.
 
 The following provides information of how to configure each schema within the report's JSON file.
 
-<Placeholder for future - there are currently no configurable options for the VMware UAG (Universial Access Gateway) Report>
+InfoLevel
+The InfoLevel sub-schema allows configuration of each section of the report at a granular level.
+
+There are 4 levels (0-3) of detail granularity for each section as follows;
+
+Setting	InfoLevel	Description
+0	Disabled	does not collect or display any information
+1	Summary	provides summarised information for a collection of objects
+2	Detailed	provides detailed information for a collection of objects
+3	Comprehensive	provides comprehensive information for individual objects
+The following sections can be set
+
+Schema	    Sub-Schema	            Default Setting     Max Setting
+InfoLevel	EdgeServiceSettings     3                   3
+InfoLevel	Horizon	                3                   3
+InfoLevel	AdvancedSettings        3                   3
 
 
 ## Examples
