@@ -71,3 +71,6 @@ PS C:\>New-AsBuiltReport -Report VMware.UAG -Target 192.168.1.100 -Credential (G
 
 ## Known Issues
 The UAG Management port is required to have a trusted cert installed. If there is no trusted cert it will error. Workaround is to install a trusted cert or add the cert to the trusted certs store on the machine running the VMware UAG (Universial Access Gateway) AS-Built Report.
+
+## Supported Versions
+Has been run on most versions of UAG in NON-FIPS configuration. Has been tested on UAG version 3.4 to 3.9
