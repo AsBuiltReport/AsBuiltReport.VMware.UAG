@@ -1,0 +1,18 @@
+{
+	"Report": {
+        "Name": "VMware UAG As Built Report",
+        "Version": "0.1.1",
+        "Status": "Released"
+    },
+    "Options": {
+        "ShowFaultSummary": true
+    },
+    "InfoLevel": {
+        "_comment_": "0 = Disabled, 1 = Summary, 2 = Detailed, 3 = Adv Detailed",
+        "UEM": {
+            "EdgeServiceSettings": 3, 
+			"Horizon": 3,
+            "AdvancedSettings": 3
+        } 
+    }
+}
