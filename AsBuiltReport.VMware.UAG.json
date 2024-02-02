@@ -1,18 +1,24 @@
 {
 	"Report": {
         "Name": "VMware UAG As Built Report",
-        "Version": "0.1.1",
-        "Status": "Released"
+        "Version": "1.0.0",
+        "Status": "Released",
+        "ShowCoverPageImage": true,
+        "ShowTableOfContents": true,
+        "ShowHeaderFooter": true,
+        "ShowTableCaptions": true
     },
     "Options": {
         "ShowFaultSummary": true
     },
     "InfoLevel": {
         "_comment_": "0 = Disabled, 1 = Summary, 2 = Detailed, 3 = Adv Detailed",
-        "UEM": {
-            "EdgeServiceSettings": 3, 
-			"Horizon": 3,
-            "AdvancedSettings": 3
-        } 
+        "UAG": {
+            "EdgeServices": 1,
+			"AuthenticationSettings": 1,
+            "AdvancedSettings": 1,
+            "IdentityBridgeingSettings": 1,
+            "SupportSettings": 1
+        }
     }
 }
