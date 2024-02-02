@@ -36,9 +36,6 @@ Please refer to the AsBuiltReport [website](https://www.asbuiltreport.com) for m
 # :books: Sample Reports
 
 ## Sample Report - Custom Style
-
-Sample VMware UAG As Built report HTML file: [Sample VMware UAG As Built Report.html](https://htmlpreview.github.io/?https://raw.githubusercontent.com/AsBuiltReport/AsBuiltReport.VMware.UAG/dev/Samples/Sample%20VMware%20UAG%20As%20Built%20Report.html)
-
 Sample VMware UAG As Built report PDF file: [Sample VMware UAG As Built Report.pdf](https://raw.githubusercontent.com/AsBuiltReport/AsBuiltReport.VMware.UAG/dev/Samples/Sample%20VMware%20UAG%20As%20Built%20Report.pdf)
 
 # :beginner: Getting Started
@@ -48,8 +45,11 @@ Below are the instructions on how to install, configure and generate a VMware UA
 <!-- ********** Update supported UAG versions ********** -->
 The VMware UAG As Built Report supports the following UAG versions;
 
-- Should work on version 4.+
+- Should work on version on all UAGs
 - Has been tested on all 230# Builds
+
+## :rotating_light: Known Issues
+The Endpoint Compliance Check Provider Settings does not report. If you have it setup and want to share, please open a bug, and we can get this working.
 
 ### PowerShell
 This report is compatible with the following PowerShell versions;

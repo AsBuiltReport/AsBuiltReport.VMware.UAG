@@ -84,17 +84,13 @@
 
     foreach ($UAGServer in $Target) {
         $UAGServerName = $UAGServer.ToString()
-
-        Write-Output "The UAG Server is $($UAGServer)" -ForegroundColor Red
         Write-PScriboMessage "Processing $UAGServerName..."
 
         Try {
             if ($PSVersionTable.PSEdition -eq 'Core') {
                 $UAGServerRest = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/monitor/stats" -Credential $Credential
             } else {$UAGServerRest = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/monitor/stats" -Credential $Credential}
-        } Catch {
-            Write-Error $_
-        }
+        } Catch {        }
 
         # Generate report if connection to UAG Server Connection is successful
         if ($UAGServerRest.accessPointStatusAndStats.overAllStatus.status) {

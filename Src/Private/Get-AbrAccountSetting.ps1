@@ -31,10 +31,10 @@ function Get-AbrAccountSetting {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $adminusers = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential
                     try {$AdminSAMLAuth = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential}
-                    catch {Write-Output 'SAML Auth is not configured'}
+                    catch {}
                 } else {$adminusers = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers" -Credential $Credential
                     try {$AdminSAMLAuth = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential}
-                    catch {Write-Output 'SAML Auth is not configured'}
+                    catch {}
                 }
                 if ($adminusers.adminUsersList) {
                     section -Style Heading4 "Account Settings" {

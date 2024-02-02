@@ -30,9 +30,9 @@ function Get-AbrRSASecureID {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     try {$AuthSecureID = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/securid-auth" -Credential $Credential}
-                    catch {Write-Output 'SAML Auth is not configured'}
+                    catch {}
                 } else {try {$AuthSecureID = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/securid-auth" -Credential $Credential}
-                            catch {Write-Output 'SAML Auth is not configured'}}
+                            catch {}}
                 if ($AuthSecureID) {
                     Paragraph "The following section will provide details for RSA SecureID Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                     BlankLine

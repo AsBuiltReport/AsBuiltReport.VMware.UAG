@@ -30,9 +30,9 @@ function Get-AbrRadius {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     try{$AuthRadius = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/radius-auth" -Credential $Credential}
-                    catch {Write-Output 'SAML Auth is not configured'}
+                    catch {}
                 } else {try {$AuthRadius = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/radius-auth" -Credential $Credential}
-                        catch {Write-Output 'SAML Auth is not configured'}}
+                        catch {}}
                 if ($AuthRadius) {
                     Paragraph "The following section will provide details for Radius Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                     BlankLine
