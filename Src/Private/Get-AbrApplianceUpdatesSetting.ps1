@@ -50,7 +50,7 @@ function Get-AbrApplianceUpdatesSetting {
                                 Write-PscriboMessage -IsWarning $_.Exception.Message
                             }
 
-                        $TableParams += @{
+                        $TableParams = @{
                             Name = "Appliance Update Settings - $($($UAGServer).split('.')[0].ToUpper())"
                             List = $true
                             ColumnWidths = 40, 60
@@ -58,7 +58,7 @@ function Get-AbrApplianceUpdatesSetting {
                         if ($Report.ShowTableCaptions) {
                             $TableParams['Caption'] = "- $($TableParams.Name)"
                         }
-                        $OutObj | Sort-Object -Property Name | Table @TableParams
+                        $OutObj | Table @TableParams
                     }
                 }
             }

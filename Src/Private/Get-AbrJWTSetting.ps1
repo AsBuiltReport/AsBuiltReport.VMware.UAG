@@ -65,7 +65,7 @@ function Get-AbrJWTSetting {
                                 Write-PscriboMessage -IsWarning $_.Exception.Message
                             }
 
-                        $TableParams += @{
+                        $TableParams = @{
                             Name = "JWT Settings Configuration - $($($UAGServer).split('.')[0].ToUpper())"
                             List = $true
                             ColumnWidths = 40, 60

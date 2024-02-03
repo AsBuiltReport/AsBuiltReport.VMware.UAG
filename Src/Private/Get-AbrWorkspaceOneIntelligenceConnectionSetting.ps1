@@ -53,7 +53,7 @@ function Get-AbrWorkspaceOneIntelligenceConnectionSetting {
                                             Write-PscriboMessage -IsWarning $_.Exception.Message
                                         }
 
-                                    $TableParams += @{
+                                    $TableParams = @{
                                         Name = "Workspace One Intelligence Connection Settings - $($WorkspaceOneIntel.Name)"
                                         List = $true
                                         ColumnWidths = 40, 60

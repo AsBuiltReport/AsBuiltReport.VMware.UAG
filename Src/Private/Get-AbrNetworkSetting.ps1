@@ -32,42 +32,44 @@ function Get-AbrNetworkSetting {
                     $NICSettings = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/nic" -Credential $Credential
                 } else {$NICSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/nic" -Credential $Credential}
                 if ($NICSettings) {
-                    Paragraph "The following section will provide details for Network Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
-                    BlankLine
+
                     $OutObj = @()
                     section -Style Heading4 "Network Settings" {
+                        Paragraph "The following section will provide details for Network Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
+                        BlankLine
                         foreach($NICSetting in $NICSettings.nicSettingsList) {
-                            $NICName = $NICSetting.nic
-                            $CustomConfig = $NICSetting.customConfig | Out-String
-                            if($null -ne $NICSetting.ipv4StaticRoutes) {
-                                $StaticRoutes = $NICSetting.ipv4StaticRoutes -join "`n"
-                            }else { $StaticRoutes = $null}
+                            section -Style Heading4 "Network Settings -  $($NICSetting.nic)" {
+                                $CustomConfig = $NICSetting.customConfig | Out-String
+                                if($null -ne $NICSetting.ipv4StaticRoutes) {
+                                    $StaticRoutes = $NICSetting.ipv4StaticRoutes -join "`n"
+                                }else { $StaticRoutes = $null}
 
-                            try {
-                                $inObj = [ordered] @{
-                                    "NIC" = $NICSetting.nic
-                                    "IPv4 Address" = $NICSetting.ipv4Address
-                                    "IPv4 Subnet" = $NICSetting.ipv4Netmask
-                                    "IPv4 Gateway" = $NICSetting.ipv4DefaultGateway
-                                    "IP Allocation Mode" = $NICSetting.allocationMode
-                                    "Static Routes" = $StaticRoutes
-                                    "Custom Configuration" = $CustomConfig
-                                }
-                                $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                }
-                                catch {
-                                    Write-PscriboMessage -IsWarning $_.Exception.Message
-                                }
+                                try {
+                                    $inObj = [ordered] @{
+                                        "NIC" = $NICSetting.nic
+                                        "IPv4 Address" = $NICSetting.ipv4Address
+                                        "IPv4 Subnet" = $NICSetting.ipv4Netmask
+                                        "IPv4 Gateway" = $NICSetting.ipv4DefaultGateway
+                                        "IP Allocation Mode" = $NICSetting.allocationMode
+                                        "Static Routes" = $StaticRoutes
+                                        "Custom Configuration" = $CustomConfig
+                                    }
+                                    $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
+                                    }
+                                    catch {
+                                        Write-PscriboMessage -IsWarning $_.Exception.Message
+                                    }
 
-                            $TableParams += @{
-                                Name = "Network Settings - $($($UAGServer).split('.')[0].ToUpper())"
-                                List = $true
-                                ColumnWidths = 40, 60
+                                $TableParams += @{
+                                    Name = "Network Settings - $($NICSetting.nic)"
+                                    List = $true
+                                    ColumnWidths = 40, 60
+                                }
+                                if ($Report.ShowTableCaptions) {
+                                    $TableParams['Caption'] = "- $($TableParams.Name)"
+                                }
+                                $OutObj | Table @TableParams
                             }
-                            if ($Report.ShowTableCaptions) {
-                                $TableParams['Caption'] = "- $($TableParams.Name)"
-                            }
-                            $OutObj | Sort-Object -Property Name | Table @TableParams
                         }
                     }
                 }

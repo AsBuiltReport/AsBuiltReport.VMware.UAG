@@ -118,7 +118,7 @@ function Get-AbrSystemConfiguration {
                                 Write-PscriboMessage -IsWarning $_.Exception.Message
                             }
 
-                        $TableParams += @{
+                        $TableParams = @{
                             Name = "System Configuration - $($($UAGServer).split('.')[0].ToUpper())"
                             List = $true
                             ColumnWidths = 40, 60
@@ -126,7 +126,7 @@ function Get-AbrSystemConfiguration {
                         if ($Report.ShowTableCaptions) {
                             $TableParams['Caption'] = "- $($TableParams.Name)"
                         }
-                        $OutObj | Sort-Object -Property Name | Table @TableParams
+                        $OutObj | Table @TableParams
                     }
                 }
             }

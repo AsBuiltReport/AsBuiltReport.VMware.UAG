@@ -32,9 +32,9 @@ function Get-AbrSAMLSetting {
                     $SAMLSettings = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/sp-metadata" -Credential $Credential
                 } else {$SAMLSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/sp-metadata" -Credential $Credential}
                 if ($SAMLSettings.items) {
-                    Paragraph "The following section will provide details for SAML Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
-                    BlankLine
                     section -Style Heading4 "SAML Settings" {
+                        Paragraph "The following section will provide details for SAML Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
+                        BlankLine
                         foreach ($SAMLSetting in $SAMLSettings.items) {
                             if ($SAMLSetting) {
                                 $OutObj = @()
@@ -51,7 +51,7 @@ function Get-AbrSAMLSetting {
                                             Write-PscriboMessage -IsWarning $_.Exception.Message
                                         }
 
-                                    $TableParams += @{
+                                    $TableParams = @{
                                         Name = "SAML Settings - $($SAMLSetting.spName)"
                                         List = $true
                                         ColumnWidths = 40, 60
@@ -59,7 +59,7 @@ function Get-AbrSAMLSetting {
                                     if ($Report.ShowTableCaptions) {
                                         $TableParams['Caption'] = "- $($TableParams.Name)"
                                     }
-                                    $OutObj | Sort-Object -Property Name | Table @TableParams
+                                    $OutObj | Table @TableParams
                                 }
                             }
                         }

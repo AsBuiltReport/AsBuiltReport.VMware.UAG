@@ -55,7 +55,7 @@ function Get-AbrOutboundProxySetting {
                                             Write-PscriboMessage -IsWarning $_.Exception.Message
                                         }
 
-                                    $TableParams += @{
+                                    $TableParams = @{
                                         Name = "Outbound Proxy Settings - $($Proxy.Name)"
                                         List = $true
                                         ColumnWidths = 40, 60

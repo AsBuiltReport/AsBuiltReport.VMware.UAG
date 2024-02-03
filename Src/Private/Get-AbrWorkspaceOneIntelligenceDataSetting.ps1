@@ -50,7 +50,7 @@ function Get-AbrWorkspaceOneIntelligenceDataSetting {
                                 Write-PscriboMessage -IsWarning $_.Exception.Message
                             }
 
-                        $TableParams += @{
+                        $TableParams = @{
                             Name = "Workspace One Intelligence Data Settings - $($($UAGServer).split('.')[0].ToUpper())"
                             List = $true
                             ColumnWidths = 40, 60
@@ -58,7 +58,7 @@ function Get-AbrWorkspaceOneIntelligenceDataSetting {
                         if ($Report.ShowTableCaptions) {
                             $TableParams['Caption'] = "- $($TableParams.Name)"
                         }
-                        $OutObj | Sort-Object -Property Name | Table @TableParams
+                        $OutObj | Table @TableParams
                     }
                 }
             }

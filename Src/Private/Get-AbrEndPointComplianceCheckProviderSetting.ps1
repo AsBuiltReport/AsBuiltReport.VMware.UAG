@@ -80,7 +80,7 @@ function Get-AbrEndPointComplianceCheckProviderSetting {
                                 Write-PscriboMessage -IsWarning $_.Exception.Message
                             }
 
-                        $TableParams += @{
+                        $TableParams = @{
                             Name = "Endpoint Compliance Check Provider Settings - $($WorkspaceOneIntel.Name)"
                             List = $true
                             ColumnWidths = 40, 60
@@ -88,7 +88,7 @@ function Get-AbrEndPointComplianceCheckProviderSetting {
                         if ($Report.ShowTableCaptions) {
                             $TableParams['Caption'] = "- $($TableParams.Name)"
                         }
-                        $OutObj | Sort-Object -Property Name | Table @TableParams
+                        $OutObj | Table @TableParams
                     }
                 }
             }

@@ -62,7 +62,7 @@ function Get-AbrOSCSPSetting {
                                     if ($Report.ShowTableCaptions) {
                                         $TableParams['Caption'] = "- $($TableParams.Name)"
                                     }
-                                    $OutObj | Sort-Object -Property Name | Table @TableParams
+                                    $OutObj | Table @TableParams
                                 }
                             }
                         }

@@ -31,10 +31,10 @@ function Get-AbrAccountSetting {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $adminusers = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential
                     try {$AdminSAMLAuth = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential}
-                    catch {}
+                    catch {Write-PScriboMessage -IsWarning "Unable to collect UAG Account Settings information"}
                 } else {$adminusers = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers" -Credential $Credential
                     try {$AdminSAMLAuth = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential}
-                    catch {}
+                    catch {Write-PScriboMessage -IsWarning "Unable to collect UAG Account Settings information"}
                 }
                 if ($adminusers.adminUsersList) {
                     section -Style Heading4 "Account Settings" {
@@ -75,14 +75,14 @@ function Get-AbrAccountSetting {
                         }
 
                         if($AdminSAMLAuth){
-                            section -Style Heading4 "A Settings - $($adminuser.name)" {
+                            section -Style Heading4 "SAML Auth Settings - $($adminuser.name)" {
                                 $OutObj = @()
 
                                 try {
                                     $inObj = [ordered] @{
                                         'Enable' = $AdminSAMLAuth.enable
                                         'Identity Provider' = $AdminSAMLAuth.entityId
-                                        'Sign SAML Request wiht Admin UI TLS Certificate' = $AdminSAMLAuth.signAuthNRequestWithAdminCert
+                                        'Sign SAML Request with Admin UI TLS Certificate' = $AdminSAMLAuth.signAuthNRequestWithAdminCert
                                         'Static SP Entity ID' = $AdminSAMLAuth.spEntityId
                                     }
                                     $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
@@ -91,7 +91,7 @@ function Get-AbrAccountSetting {
                                         Write-PscriboMessage -IsWarning $_.Exception.Message
                                     }
 
-                                $TableParams += @{
+                                $TableParams = @{
                                     Name = "Account Settings - $($adminuser.name)"
                                     List = $true
                                     ColumnWidths = 40, 60
@@ -99,7 +99,7 @@ function Get-AbrAccountSetting {
                                 if ($Report.ShowTableCaptions) {
                                     $TableParams['Caption'] = "- $($TableParams.Name)"
                                 }
-                                $OutObj | Sort-Object -Property Name | Table @TableParams
+                                $OutObj | Table @TableParams
                             }
                         }
 

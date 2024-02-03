@@ -59,7 +59,7 @@ function Get-AbrRealmSetting {
                                             Write-PscriboMessage -IsWarning $_.Exception.Message
                                         }
 
-                                    $TableParams += @{
+                                    $TableParams = @{
                                         Name = "Realm Settings - $($KerberosRealm.Name)"
                                         List = $true
                                         ColumnWidths = 40, 60

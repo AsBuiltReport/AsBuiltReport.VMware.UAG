@@ -49,20 +49,26 @@ function Get-AbrTLSServerCertificateSetting {
                             $DNSList = @('')
 
                             $index = $ServerCertAdmin.IndexOf("-----END CERTIFICATE-----")
-                            $Cert = $ServerCertAdmin.Substring(0, $index)
+                            if($index){
+                                $Cert = $ServerCertAdmin.Substring(0, $index)
+                                if($Cert){
+                                    # Convert the certificate data to a byte array
+                                    $certBytes = [System.Convert]::FromBase64String($Cert -replace '-.*-')
 
-                            # Convert the certificate data to a byte array
-                            $certBytes = [System.Convert]::FromBase64String($Cert -replace '-.*-')
+                                    # Create an X509Certificate2 object from the byte array
+                                    $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList @(,$certBytes)
+                                    if($cert){
+                                        # Split the string on the comma
+                                        $CertParts = $Cert.SubjectName.Name.Split(',')
+                                        if($CertParts){
+                                            # Get the CN and O parts and remove the prefix
+                                            $cn = ($CertParts | Where-Object { $_.Trim().StartsWith('CN=') }).Trim().Substring(3)
+                                            $o = ($CertParts | Where-Object { $_.Trim().StartsWith('O=') }).Trim().Substring(2)
+                                        }
+                                    }
+                                }
+                            }
 
-                            # Create an X509Certificate2 object from the byte array
-                            $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList @(,$certBytes)
-
-                            # Split the string on the comma
-                            $CertParts = $Cert.SubjectName.Name.Split(',')
-
-                            # Get the CN and O parts and remove the prefix
-                            $cn = ($CertParts | Where-Object { $_.Trim().StartsWith('CN=') }).Trim().Substring(3)
-                            $o = ($CertParts | Where-Object { $_.Trim().StartsWith('O=') }).Trim().Substring(2)
 
                             # Foreach $DNSlist Name create comma separated list
                             if($null -ne $Cert.DnsNameList.unicode) {
@@ -94,7 +100,7 @@ function Get-AbrTLSServerCertificateSetting {
                                         Write-PscriboMessage -IsWarning $_.Exception.Message
                                     }
 
-                                $TableParams += @{
+                                $TableParams = @{
                                     Name = "User Server Certificate Settings - $($($UAGServer).split('.')[0].ToUpper())"
                                     List = $true
                                     ColumnWidths = 40, 60
@@ -102,7 +108,7 @@ function Get-AbrTLSServerCertificateSetting {
                                 if ($Report.ShowTableCaptions) {
                                     $TableParams['Caption'] = "- $($TableParams.Name)"
                                 }
-                                $OutObj | Sort-Object -Property Name | Table @TableParams
+                                $OutObj | Table @TableParams
                             }
                         }
                         if ($ServerCertEndUser){
@@ -159,7 +165,7 @@ function Get-AbrTLSServerCertificateSetting {
                                         Write-PscriboMessage -IsWarning $_.Exception.Message
                                     }
 
-                                $TableParams += @{
+                                $TableParams = @{
                                     Name = "Admin Server Certificate Settings - $($($UAGServer).split('.')[0].ToUpper())"
                                     List = $true
                                     ColumnWidths = 40, 60
@@ -167,7 +173,7 @@ function Get-AbrTLSServerCertificateSetting {
                                 if ($Report.ShowTableCaptions) {
                                     $TableParams['Caption'] = "- $($TableParams.Name)"
                                 }
-                                $OutObj | Sort-Object -Property Name | Table @TableParams
+                                $OutObj | Table @TableParams
                             }
                         }
                     }

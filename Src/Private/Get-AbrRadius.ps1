@@ -30,14 +30,14 @@ function Get-AbrRadius {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     try{$AuthRadius = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/radius-auth" -Credential $Credential}
-                    catch {}
+                    catch {Write-PScriboMessage -IsWarning "Unable to collect UAG Radius information"}
                 } else {try {$AuthRadius = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/radius-auth" -Credential $Credential}
-                        catch {}}
+                        catch {Write-PScriboMessage -IsWarning "Unable to collect UAG Radius information"}}
                 if ($AuthRadius) {
-                    Paragraph "The following section will provide details for Radius Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
-                    BlankLine
                     $OutObj = @()
                     section -Style Heading3 "Radius Settings" {
+                        Paragraph "The following section will provide details for Radius Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
+                        BlankLine
                         try {
                             $inObj = [ordered] @{
                                 "Enable RADIUS" = $AuthRadius.enabled
@@ -76,7 +76,7 @@ function Get-AbrRadius {
                                 Write-PscriboMessage -IsWarning $_.Exception.Message
                             }
 
-                        $TableParams += @{
+                        $TableParams = @{
                             Name = "Radius Settings - $($($UAGServer).split('.')[0].ToUpper())"
                             List = $true
                             ColumnWidths = 40, 60
@@ -84,7 +84,7 @@ function Get-AbrRadius {
                         if ($Report.ShowTableCaptions) {
                             $TableParams['Caption'] = "- $($TableParams.Name)"
                         }
-                        $OutObj | Sort-Object -Property Name | Table @TableParams
+                        $OutObj | Table @TableParams
                     }
                 }
             }

@@ -32,10 +32,10 @@ function Get-AbrHighAvailability {
                     $LoadBalancerSettings = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/loadbalancer/settings" -Credential $Credential
                 } else {$LoadBalancerSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/loadbalancer/settings" -Credential $Credential}
                 if ($LoadBalancerSettings) {
-                    Paragraph "The following section will provide details for High Availability Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
-                    BlankLine
                     $OutObj = @()
                     section -Style Heading4 "High Availability Settings" {
+                        Paragraph "The following section will provide details for High Availability Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
+                        BlankLine
                         try {
                             $inObj = [ordered] @{
                                 "High Availability Mode" = $LoadBalancerSettings.loadBalancerMode
@@ -49,7 +49,7 @@ function Get-AbrHighAvailability {
                                 Write-PscriboMessage -IsWarning $_.Exception.Message
                             }
 
-                        $TableParams += @{
+                        $TableParams = @{
                             Name = "High Availability Settings - $($($UAGServer).split('.')[0].ToUpper())"
                             List = $true
                             ColumnWidths = 40, 60
@@ -57,7 +57,7 @@ function Get-AbrHighAvailability {
                         if ($Report.ShowTableCaptions) {
                             $TableParams['Caption'] = "- $($TableParams.Name)"
                         }
-                        $OutObj | Sort-Object -Property Name | Table @TableParams
+                        $OutObj | Table @TableParams
                     }
                 }
             }

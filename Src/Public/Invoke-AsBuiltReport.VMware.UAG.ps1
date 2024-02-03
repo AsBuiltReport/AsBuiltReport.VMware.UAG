@@ -90,7 +90,7 @@
             if ($PSVersionTable.PSEdition -eq 'Core') {
                 $UAGServerRest = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/monitor/stats" -Credential $Credential
             } else {$UAGServerRest = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/monitor/stats" -Credential $Credential}
-        } Catch {        }
+        } Catch {throw "Unable to connect to VMware UAG: $UAGServer"}
 
         # Generate report if connection to UAG Server Connection is successful
         if ($UAGServerRest.accessPointStatusAndStats.overAllStatus.status) {
@@ -115,7 +115,7 @@
                 if($InfoLevel.UAG.AdvancedSettings -ge 1 -or $InfoLevel.UAG.IdentityBridgeingSettings -ge 1){
                     section -Style Heading2 "Advanced Settings" {
                         if($InfoLevel.UAG.AdvancedSettings -ge 1){
-                            section -Style Heading3 "Advanced Settings" {
+                            section -Style Heading3 "Advanced Settings - Subsection" {
                                 Get-AbrSystemConfiguration
                                 Get-AbrNetworkSetting
                                 Get-AbrHighAvailability
@@ -145,9 +145,9 @@
                 }
                 if($InfoLevel.UAG.SupportSettings -ge 1){
                     section -Style Heading2 "Support Settings" {
-                        section -Style Heading3 "Support Settings" {
+                        #section -Style Heading3 "Support Settings" {
                             Get-AbrLogLevelSetting
-                        }
+                        #}
                     }
                 }
             }

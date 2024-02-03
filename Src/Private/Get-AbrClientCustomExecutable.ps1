@@ -72,7 +72,7 @@ function Get-AbrClientCustomExecutable {
                                         Write-PscriboMessage -IsWarning $_.Exception.Message
                                     }
 
-                                    $TableParams += @{
+                                    $TableParams = @{
                                         Name = "Client Custom Executable - $($CustomExecutable.hostedResourceMetadata.name)"
                                         List = $true
                                         ColumnWidths = 40, 60

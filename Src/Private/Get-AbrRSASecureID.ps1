@@ -30,14 +30,14 @@ function Get-AbrRSASecureID {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     try {$AuthSecureID = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/securid-auth" -Credential $Credential}
-                    catch {}
+                    catch {Write-PScriboMessage -IsWarning "Unable to collect UAG RSA SecureID Settings information"}
                 } else {try {$AuthSecureID = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/securid-auth" -Credential $Credential}
-                            catch {}}
+                            catch {Write-PScriboMessage -IsWarning "Unable to collect UAG RSA SecureID Settings information"}}
                 if ($AuthSecureID) {
-                    Paragraph "The following section will provide details for RSA SecureID Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
-                    BlankLine
                     $OutObj = @()
                     section -Style Heading3 "RSA SecureID Settings" {
+                        Paragraph "The following section will provide details for RSA SecureID Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
+                        BlankLine
                         try {
                             $inObj = [ordered] @{
                                 "Enable RSA SecurID" = $AuthSecurID.enabled
@@ -57,7 +57,7 @@ function Get-AbrRSASecureID {
                                 Write-PscriboMessage -IsWarning $_.Exception.Message
                             }
 
-                        $TableParams += @{
+                        $TableParams = @{
                             Name = "RSA SecureID Settings - $($($UAGServer).split('.')[0].ToUpper())"
                             List = $true
                             ColumnWidths = 40, 60
@@ -65,7 +65,7 @@ function Get-AbrRSASecureID {
                         if ($Report.ShowTableCaptions) {
                             $TableParams['Caption'] = "- $($TableParams.Name)"
                         }
-                        $OutObj | Sort-Object -Property Name | Table @TableParams
+                        $OutObj | Table @TableParams
                     }
                 }
             }

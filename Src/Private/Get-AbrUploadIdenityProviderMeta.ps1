@@ -55,7 +55,7 @@ function Get-AbrUploadIdenityProviderMeta {
                                             Write-PscriboMessage -IsWarning $_.Exception.Message
                                         }
 
-                                    $TableParams += @{
+                                    $TableParams = @{
                                         Name = "Identity Provider Metadata Settings - $($($UAGServer).split('.')[0].ToUpper())"
                                         List = $true
                                         ColumnWidths = 40, 60
@@ -63,7 +63,7 @@ function Get-AbrUploadIdenityProviderMeta {
                                     if ($Report.ShowTableCaptions) {
                                         $TableParams['Caption'] = "- $($TableParams.Name)"
                                     }
-                                    $OutObj | Sort-Object -Property Name | Table @TableParams
+                                    $OutObj | Table @TableParams
                                 }
                             }
                         }

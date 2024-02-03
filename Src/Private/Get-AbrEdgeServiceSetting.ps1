@@ -37,7 +37,7 @@ function Get-AbrEdgeServiceSetting {
                     $OutObj = @()
                     foreach ($EdgeServiceSetting in $EdgeServiceSettings.edgeServiceSettingsList) {
                         if ($EdgeServiceSetting.identifier -eq 'VIEW') {
-                            section -Style Heading4 "Horizon Settings - $($($UAGServer).split('.')[0].ToUpper())" {
+                            section -Style Heading4 "Horizon Settings" {
                                 if($null -ne $EdgeServiceSetting.trustedCertificates) {
                                     $trustedCertificatesData = $EdgeServiceSetting.trustedCertificates.name -join "`n"
                                 }else { $trustedCertificatesData = $null}
@@ -118,7 +118,7 @@ function Get-AbrEdgeServiceSetting {
                             }
                         }
                         if ($EdgeServiceSetting.identifier -eq 'WEB_REVERSE_PROXY') {
-                            section -Style Heading4 "Reverse Proxy Settings - $($($UAGServer).split('.')[0].ToUpper())" {
+                            section -Style Heading4 "Reverse Proxy Settings" {
                                 foreach($ProxySetting in ($EdgeServiceSetting | Where-Object {$_.identifier -eq 'WEB_REVERSE_PROXY'})){
                                     if($null -ne $EdgeServiceSetting.trustedCertificates) {
                                         $trustedCertificatesDataProxy = $EdgeServiceSetting.trustedCertificates.name -join "`n"
@@ -178,7 +178,7 @@ function Get-AbrEdgeServiceSetting {
                             }
                         }
                         if ($EdgeServiceSetting.identifier -eq 'TUNNEL_GATEWAY') {
-                            section -Style Heading4 "Tunnel Settings - $($($UAGServer).split('.')[0].ToUpper())" {
+                            section -Style Heading4 "Tunnel Settings" {
                                 if($null -ne $EdgeServiceSetting.trustedCertificates) {
                                     $trustedCertificates = $EdgeServiceSetting.trustedCertificates -join "`n"
                                 }else { $trustedCertificates = $null}
@@ -220,7 +220,7 @@ function Get-AbrEdgeServiceSetting {
                             }
                         }
                         if ($EdgeServiceSetting.identifier -eq 'SEG') {
-                            section -Style Heading4 "Secure Email Gateway - $($($UAGServer).split('.')[0].ToUpper())" {
+                            section -Style Heading4 "Secure Email Gateway" {
                                 if($null -ne $EdgeServiceSetting.trustedCertificates) {
                                     $trustedCertificates = $EdgeServiceSetting.trustedCertificates -join "`n"
                                 }else { $trustedCertificates = $null}
@@ -265,7 +265,7 @@ function Get-AbrEdgeServiceSetting {
                             }
                         }
                         if ($EdgeServiceSetting.identifier -eq 'CONTENT_GATEWAY') {
-                            section -Style Heading4 "Content Gateway - $($($UAGServer).split('.')[0].ToUpper())" {
+                            section -Style Heading4 "Content Gateway" {
                                 if($null -ne $EdgeServiceSetting.trustedCertificates) {
                                     $trustedCertificates = $EdgeServiceSetting.trustedCertificates -join "`n"
                                 }else { $trustedCertificates = $null}

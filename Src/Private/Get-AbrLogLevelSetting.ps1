@@ -32,10 +32,10 @@ function Get-AbrLogLevelSetting {
                     $LogLevelSettings = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/monitor/getLogLevels" -Credential $Credential
                 } else {$LogLevelSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/monitor/getLogLevels" -Credential $Credential}
                 if ($LogLevelSettings) {
-                    Paragraph "The following section will provide details for Log Level Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
-                    BlankLine
                     $OutObj = @()
                     section -Style Heading3 "Log Level Settings" {
+                        Paragraph "The following section will provide details for Log Level Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
+                        BlankLine
                         try {
                             $inObj = [ordered] @{
                                 "All" = $LogLevelSettings.All
@@ -56,15 +56,15 @@ function Get-AbrLogLevelSetting {
                                 Write-PscriboMessage -IsWarning $_.Exception.Message
                             }
 
-                        $TableParams += @{
-                            Name = "Radius Settings - $($($UAGServer).split('.')[0].ToUpper())"
+                        $TableParams = @{
+                            Name = "Log Level Settings - $($($UAGServer).split('.')[0].ToUpper())"
                             List = $true
                             ColumnWidths = 40, 60
                         }
                         if ($Report.ShowTableCaptions) {
                             $TableParams['Caption'] = "- $($TableParams.Name)"
                         }
-                        $OutObj | Sort-Object -Property Name | Table @TableParams
+                        $OutObj | Table @TableParams
                     }
                 }
             }

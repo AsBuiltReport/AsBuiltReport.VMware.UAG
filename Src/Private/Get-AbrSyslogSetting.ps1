@@ -60,7 +60,7 @@ function Get-AbrSyslogSetting {
                                             Write-PscriboMessage -IsWarning $_.Exception.Message
                                         }
 
-                                    $TableParams += @{
+                                    $TableParams = @{
                                         Name = "Syslog Server Settings - $($Syslog.syslogSettingName)"
                                         List = $true
                                         ColumnWidths = 40, 60

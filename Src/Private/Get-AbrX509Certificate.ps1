@@ -32,10 +32,10 @@ function Get-AbrX509Certificate {
                     $AuthCert = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/certificate-auth" -Credential $Credential
                 } else {$AuthCert = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/certificate-auth" -Credential $Credential}
                 if ($AuthCert) {
-                    Paragraph "The following section will provide details for X509 Certificate Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
-                    BlankLine
                     $OutObj = @()
                     section -Style Heading4 "X509 Certificate Settings" {
+                        Paragraph "The following section will provide details for X509 Certificate Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
+                        BlankLine
                         try {
                             $inObj = [ordered] @{
                                 "Enable X.509 Certificate" = $AuthCert.enabled
@@ -57,7 +57,7 @@ function Get-AbrX509Certificate {
                                 Write-PscriboMessage -IsWarning $_.Exception.Message
                             }
 
-                        $TableParams += @{
+                        $TableParams = @{
                             Name = "X509 Certificate Settings - $($($UAGServer).split('.')[0].ToUpper())"
                             List = $true
                             ColumnWidths = 40, 60
@@ -65,7 +65,7 @@ function Get-AbrX509Certificate {
                         if ($Report.ShowTableCaptions) {
                             $TableParams['Caption'] = "- $($TableParams.Name)"
                         }
-                        $OutObj | Sort-Object -Property Name | Table @TableParams
+                        $OutObj | Table @TableParams
                     }
                 }
             }
