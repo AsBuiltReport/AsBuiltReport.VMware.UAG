@@ -55,8 +55,8 @@ The Endpoint Compliance Check Provider Settings does not report. If you have it 
 This report is compatible with the following PowerShell versions;
 
 <!-- ********** Update supported PowerShell versions ********** -->
-| Windows PowerShell 5.1 |     PowerShell 7    |
-|:----------------------:|:--------------------:|
+| Windows PowerShell 5.1 |    PowerShell 7    |
+| :--------------------: | :----------------: |
 |   :white_check_mark:   | :white_check_mark: |
 ## :wrench: System Requirements
 <!-- ********** Update system requirements ********** -->
@@ -67,7 +67,7 @@ PowerShell 5.1 or PowerShell 7, and the following PowerShell modules are require
 
 ### :closed_lock_with_key: Required Privileges
 
-* To generate a VMware UAG report, a user account with the Admin role or higher on the UAG is required. (Required Admin rights to use the AppVol APIs)
+* To generate a VMware UAG report, a user account with the Admin role or higher on the UAG is required. (Required Admin rights to use the UAG APIs)
 
 ## :package: Module Installation
 
@@ -110,15 +110,15 @@ The following provides information of how to configure each schema within the re
 ### Report
 The **Report** schema provides configuration of the VMware UAG report information.
 
-| Sub-Schema          | Setting      | Default                        | Description                                                  |
-|---------------------|--------------|--------------------------------|--------------------------------------------------------------|
+| Sub-Schema          | Setting      | Default                    | Description                                                  |
+| ------------------- | ------------ | -------------------------- | ------------------------------------------------------------ |
 | Name                | User defined | VMware UAG As Built Report | The name of the As Built Report                              |
-| Version             | User defined | 1.1                            | The report version                                           |
-| Status              | User defined | Released                       | The report release status                                    |
-| ShowCoverPageImage  | true / false | true                           | Toggle to enable/disable the display of the cover page image |
-| ShowTableOfContents | true / false | true                           | Toggle to enable/disable table of contents                   |
-| ShowHeaderFooter    | true / false | true                           | Toggle to enable/disable document headers & footers          |
-| ShowTableCaptions   | true / false | true                           | Toggle to enable/disable table captions/numbering            |
+| Version             | User defined | 1.0                        | The report version                                           |
+| Status              | User defined | Released                   | The report release status                                    |
+| ShowCoverPageImage  | true / false | true                       | Toggle to enable/disable the display of the cover page image |
+| ShowTableOfContents | true / false | true                       | Toggle to enable/disable table of contents                   |
+| ShowHeaderFooter    | true / false | true                       | Toggle to enable/disable document headers & footers          |
+| ShowTableCaptions   | true / false | true                       | Toggle to enable/disable table captions/numbering            |
 
 ### Options
 The **Options** schema allows certain options within the report to be toggled on or off.
@@ -129,39 +129,21 @@ The **InfoLevel** schema allows configuration of each section of the report at a
 
 There are 3 levels (0-2) of detail granularity for each section as follows;
 
-| Setting | InfoLevel         | Description                                                                                                                                |
-|:-------:|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-|    0    | Disabled          | Does not collect or display any information                                                                                                |
-|    1    | Enabled / Summary | Provides summarised information for a collection of objects                                                                                |
-|    2    | Adv Summary       | Provides condensed, detailed information for a collection of objects                                                                       |
+| Setting | InfoLevel         | Description                                                          |
+| :-----: | ----------------- | -------------------------------------------------------------------- |
+|    0    | Disabled          | Does not collect or display any information                          |
+|    1    | Enabled / Summary | Provides summarised information for a collection of objects          |
+|    2    | Adv Summary       | Provides condensed, detailed information for a collection of objects |
 
 The table below outlines the default and maximum InfoLevel settings for each section.
 
-| Sub-Schema   | Default Setting | Maximum Setting |
-|--------------|:---------------:|:---------------:|
-General | 1 | 1 |
-Application | 1 | 1 |
-Package | 1 | 1 |
-Program | 1 | 1 |
-Assignment | 1 | 1 |
-Writeables | 1 | 1 |
-ADUsers | 1 | 1 |
-Computers | 1 | 1 |
-ADGroups | 1 | 1 |
-ADOUs | 1 | 1 |
-Machines | 1 | 1 |
-StorageLocations | 1 | 1 |
-StorageGroups | 1 | 1 |
-Instance | 1 | 1 |
-Jobs | 1 | 1 |
-Troubleshooting | 1 | 1 |
-License | 1 | 1 |
-ADDomains | 1 | 1 |
-AdminGroups | 1 | 1 |
-MachineManagers | 1 | 1 |
-Storage | 1 | 1 |
-Managers | 1 | 1 |
-Settings | 1 | 1 |
+| Sub-Schema                | Default Setting | Maximum Setting |
+| ------------------------- | :-------------: | :-------------: |
+| EdgeServices              |        1        |        1        |
+| AuthenticationSettings    |        1        |        1        |
+| AdvancedSettings          |        1        |        1        |
+| IdentityBridgeingSettings |        1        |        1        |
+| SupportSettings           |        1        |        1        |
 
 
 ### Healthcheck
@@ -172,18 +154,18 @@ Health checks are yet to be developed.
 ## :computer: Examples
 
 ```powershell
-# Generate a As Built Report for UAG Manager Server 'Manager-apv-01.corp.local' using specified credentials. Export report to HTML & DOCX formats. Use default report style. Append timestamp to report filename. Save reports to 'C:\Users\Jon\Documents'
-PS C:\> New-AsBuiltReport -Report VMware.UAG -Target 'Manager-apv-01.corp.local' -Username 'administrator@domain.local' -Password 'VMware1!' -Format Html,Word -OutputFolderPath 'C:\Users\Jon\Documents' -Timestamp
+server# Generate a As Built Report for UAG Manager Server 'server-uag-01.corp.local' using specified credentials. Export report to HTML & DOCX formats. Use default report style. Append timestamp to report filename. Save reports to 'C:\Users\Jon\Documents'
+PS C:\> New-AsBuiltReport -Report VMware.UAG -Target 'server-uag-01.corp.local' -Username 'admin' -Password 'VMware1!' -Format Html,Word -OutputFolderPath 'C:\Users\Jon\Documents' -Timestamp
 
-# Generate a As Built Report for UAG Manager Server 'Manager-apv-01.corp.local' using specified credentials and report configuration file. Export report to Text, HTML & DOCX formats. Use default report style. Save reports to 'C:\Users\Jon\Documents'. Display verbose messages to the console.
-PS C:\> New-AsBuiltReport -Report VMware.UAG -Target 'Manager-apv-01.corp.local' -Username 'administrator@domain.local' -Password 'VMware1!' -Format Text,Html,Word -OutputFolderPath 'C:\Users\Jon\Documents' -ReportConfigFilePath 'C:\Users\Jon\AsBuiltReport\AsBuiltReport.VMware.UAG.json' -Verbose
+# Generate a As Built Report for UAG Manager Server 'server-uag-01.corp.local' using specified credentials and report configuration file. Export report to Text, HTML & DOCX formats. Use default report style. Save reports to 'C:\Users\Jon\Documents'. Display verbose messages to the console.
+PS C:\> New-AsBuiltReport -Report VMware.UAG -Target 'server-uag-01.corp.local' -Username 'admin' -Password 'VMware1!' -Format Text,Html,Word -OutputFolderPath 'C:\Users\Jon\Documents' -ReportConfigFilePath 'C:\Users\Jon\AsBuiltReport\AsBuiltReport.VMware.UAG.json' -Verbose
 
-# Generate a As Built Report for UAG Manager Server 'Manager-apv-01.corp.local' using stored credentials. Export report to HTML & Text formats. Use default report style. Highlight environment issues within the report. Save reports to 'C:\Users\JOn\Documents'.
+# Generate a As Built Report for UAG Manager Server 'server-uag-01.corp.local' using stored credentials. Export report to HTML & Text formats. Use default report style. Highlight environment issues within the report. Save reports to 'C:\Users\JOn\Documents'.
 PS C:\> $Creds = Get-Credential
-PS C:\> New-AsBuiltReport -Report VMware.UAG -Target 'Manager-apv-01.corp.local' -Credential $Creds -Format Html,Text -OutputFolderPath 'C:\Users\Jon\Documents' -EnableHealthCheck
+PS C:\> New-AsBuiltReport -Report VMware.UAG -Target 'server-uag-01.corp.local' -Credential $Creds -Format Html,Text -OutputFolderPath 'C:\Users\Jon\Documents' -EnableHealthCheck
 
-# Generate a single As Built Report for UAG Manager Servers 'Manager-apv-01.corp.local' and 'UAG-cs-02.corp.local' using specified credentials. Report exports to WORD format by default. Apply custom style to the report. Reports are saved to the user profile folder by default.
-PS C:\> New-AsBuiltReport -Report VMware.UAG -Target 'Manager-apv-01.corp.local','UAG-cs-02.corp.local' -Username 'administrator@domain.local' -Password 'VMware1!' -StyleFilePath 'C:\Scripts\Styles\MyCustomStyle.ps1'
+# Generate a single As Built Report for UAG Manager Servers 'server-uag-01.corp.local' and 'server-uag-02.corp.local' using specified credentials. Report exports to WORD format by default. Apply custom style to the report. Reports are saved to the user profile folder by default.
+PS C:\> New-AsBuiltReport -Report VMware.UAG -Target 'server-uag-01.corp.local','server-uag-02.corp.local' -Username 'admin' -Password 'VMware1!' -StyleFilePath 'C:\Scripts\Styles\MyCustomStyle.ps1'
 
-# Generate a As Built Report for UAG Manager Server 'Manager-apv-01.corp.local' using specified credentials. Export report to HTML & DOCX formats. Use default report style. Reports are saved to the user profile folder by default. Attach and send reports via e-mail.
-PS C:\> New-AsBuiltReport -Report VMware.UAG -Target 'Manager-apv-01.corp.local' -Username 'administrator@domain.local' -Password 'VMware1!' -Format Html,Word -OutputFolderPath 'C:\Users\Jon\Documents' -SendEmail
+# Generate a As Built Report for UAG Manager Server 'server-uag-01.corp.local' using specified credentials. Export report to HTML & DOCX formats. Use default report style. Reports are saved to the user profile folder by default. Attach and send reports via e-mail.
+PS C:\> New-AsBuiltReport -Report VMware.UAG -Target 'server-uag-01.corp.local' -Username 'admin' -Password 'VMware1!' -Format Html,Word -OutputFolderPath 'C:\Users\Jon\Documents' -SendEmail
