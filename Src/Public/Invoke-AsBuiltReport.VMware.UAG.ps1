@@ -18,11 +18,9 @@
     #>
 
 
-    [CmdletBinding()]
     param (
         [String[]] $Target,
-        [PSCredential] $Credential,
-        [String] $StylePath
+        [PSCredential] $Credential
     )
 
     if ($PSVersionTable.PSEdition -ne 'Core') {
