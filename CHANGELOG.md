@@ -1,6 +1,6 @@
 # :arrows_clockwise: VMware UAG As Built Report Changelog
 
-## [1.1.0] - 2024-2-2
+## [1.1.0] - 2024-02-04
 
 ### Added
 
