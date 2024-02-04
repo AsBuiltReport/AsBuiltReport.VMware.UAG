@@ -22,7 +22,7 @@ function Get-AbrHighAvailability {
 
     begin {
         Write-PScriboMessage "High Availability Settings InfoLevel set at $($InfoLevel.UAG.AdvancedSettings)."
-        Write-PscriboMessage "Collecting High Availability Settings information."
+        Write-PScriboMessage "Collecting High Availability Settings information."
     }
 
     process {
@@ -30,10 +30,10 @@ function Get-AbrHighAvailability {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $LoadBalancerSettings = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/loadbalancer/settings" -Credential $Credential
-                } else {$LoadBalancerSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/loadbalancer/settings" -Credential $Credential}
+                } else { $LoadBalancerSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/loadbalancer/settings" -Credential $Credential }
                 if ($LoadBalancerSettings) {
                     $OutObj = @()
-                    section -Style Heading4 "High Availability Settings" {
+                    Section -Style Heading4 "High Availability Settings" {
                         Paragraph "The following section will provide details for High Availability Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
                         try {
@@ -42,12 +42,11 @@ function Get-AbrHighAvailability {
                                 "High Availability State" = $LoadBalancerState
                                 "Virtual IP Address" = $LoadBalancerSettings.virtualIPAddress
                                 "Group ID" = $LoadBalancerSettings.groupID
-                                }
+                            }
                             $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                            }
-                            catch {
-                                Write-PscriboMessage -IsWarning $_.Exception.Message
-                            }
+                        } catch {
+                            Write-PScriboMessage -IsWarning $_.Exception.Message
+                        }
 
                         $TableParams = @{
                             Name = "High Availability Settings - $($($UAGServer).split('.')[0].ToUpper())"
@@ -60,9 +59,8 @@ function Get-AbrHighAvailability {
                         $OutObj | Table @TableParams
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

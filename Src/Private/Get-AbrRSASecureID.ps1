@@ -22,20 +22,22 @@ function Get-AbrRSASecureID {
 
     begin {
         Write-PScriboMessage "RSA SecureID InfoLevel set at $($InfoLevel.UAG.AuthenticationSettings)."
-        Write-PscriboMessage "Collecting UAG RSA SecureID Settings information."
+        Write-PScriboMessage "Collecting UAG RSA SecureID Settings information."
     }
 
     process {
         if ($InfoLevel.UAG.AuthenticationSettings -ge 1) {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
-                    try {$AuthSecureID = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/securid-auth" -Credential $Credential}
-                    catch {Write-PScriboMessage -IsWarning "Unable to collect UAG RSA SecureID Settings information"}
-                } else {try {$AuthSecureID = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/securid-auth" -Credential $Credential}
-                            catch {Write-PScriboMessage -IsWarning "Unable to collect UAG RSA SecureID Settings information"}}
+                    try { $AuthSecureID = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/securid-auth" -Credential $Credential }
+                    catch { Write-PScriboMessage -IsWarning "Unable to collect UAG RSA SecureID Settings information" }
+                } else {
+                    try { $AuthSecureID = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/securid-auth" -Credential $Credential }
+                    catch { Write-PScriboMessage -IsWarning "Unable to collect UAG RSA SecureID Settings information" }
+                }
                 if ($AuthSecureID) {
                     $OutObj = @()
-                    section -Style Heading3 "RSA SecureID Settings" {
+                    Section -Style Heading3 "RSA SecureID Settings" {
                         Paragraph "The following section will provide details for RSA SecureID Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
                         try {
@@ -52,10 +54,9 @@ function Get-AbrRSASecureID {
                                 "Name ID Suffix" = $AuthSecurID.nameIdSuffix
                             }
                             $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                            }
-                            catch {
-                                Write-PscriboMessage -IsWarning $_.Exception.Message
-                            }
+                        } catch {
+                            Write-PScriboMessage -IsWarning $_.Exception.Message
+                        }
 
                         $TableParams = @{
                             Name = "RSA SecureID Settings - $($($UAGServer).split('.')[0].ToUpper())"
@@ -68,9 +69,8 @@ function Get-AbrRSASecureID {
                         $OutObj | Table @TableParams
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

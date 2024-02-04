@@ -22,7 +22,7 @@ function Get-AbrJWTSetting {
 
     begin {
         Write-PScriboMessage "JWT Settings InfoLevel set at $($InfoLevel.UAG.AdvancedSettings)."
-        Write-PscriboMessage "Collecting UAG JWT Settings information."
+        Write-PScriboMessage "Collecting UAG JWT Settings information."
     }
 
     process {
@@ -30,18 +30,18 @@ function Get-AbrJWTSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $JWTSettings = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/jwt" -Credential $Credential
-                } else {$JWTSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/jwt" -Credential $Credential}
+                } else { $JWTSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/jwt" -Credential $Credential }
                 if ($JWTSettings.jwtSettingsList) {
-                    section -Style Heading4 "JWT Settings Configuration" {
+                    Section -Style Heading4 "JWT Settings Configuration" {
                         Paragraph "The following section will provide details on JWT Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
 
-                        if($null -ne $JWTSettings.jwtSettingsList.publicKeyURLSettings.trustedCertificates.name) {
+                        if ($null -ne $JWTSettings.jwtSettingsList.publicKeyURLSettings.trustedCertificates.name) {
                             $TrustedCerts = $JWTSettings.jwtSettingsList.publicKeyURLSettings.trustedCertificates.name -join "`n"
-                        }else { $TrustedCerts = $null}
-                        if($null -ne $JWTSettings.jwtSettingsList.StaticPublicKeys.name) {
+                        } else { $TrustedCerts = $null }
+                        if ($null -ne $JWTSettings.jwtSettingsList.StaticPublicKeys.name) {
                             $PublicKeys = $JWTSettings.jwtSettingsList.StaticPublicKeys.name -join "`n"
-                        }else { $PublicKeys = $null}
+                        } else { $PublicKeys = $null }
 
                         $OutObj = @()
                         try {
@@ -60,10 +60,9 @@ function Get-AbrJWTSetting {
                                 "Static Public Keys" = $PublicKeys
                             }
                             $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                            }
-                            catch {
-                                Write-PscriboMessage -IsWarning $_.Exception.Message
-                            }
+                        } catch {
+                            Write-PScriboMessage -IsWarning $_.Exception.Message
+                        }
 
                         $TableParams = @{
                             Name = "JWT Settings Configuration - $($($UAGServer).split('.')[0].ToUpper())"
@@ -76,9 +75,8 @@ function Get-AbrJWTSetting {
                         $OutObj | Sort-Object -Property Name | Table @TableParams
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

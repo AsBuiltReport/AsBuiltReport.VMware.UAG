@@ -27,7 +27,7 @@
 
     if ($PSVersionTable.PSEdition -ne 'Core') {
 
-        add-type @"
+        Add-Type @"
     using System.Net;
     using System.Security.Cryptography.X509Certificates;
     public class TrustAllCertsPolicy : ICertificatePolicy {
@@ -38,7 +38,7 @@
         }
     }
 "@
-[System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+        [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 
     }
 
@@ -63,8 +63,8 @@
             }
         }
     } Catch {
-            Write-PscriboMessage -IsWarning $_.Exception.Message
-        }
+        Write-PScriboMessage -IsWarning $_.Exception.Message
+    }
 
     # Check if the required version of VMware PowerCLI is installed
     Get-RequiredModule -Name 'VMware.PowerCLI' -Version '12.7'
@@ -89,22 +89,22 @@
         Try {
             if ($PSVersionTable.PSEdition -eq 'Core') {
                 $UAGServerRest = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/monitor/stats" -Credential $Credential
-            } else {$UAGServerRest = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/monitor/stats" -Credential $Credential}
-        } Catch {throw "Unable to connect to VMware UAG: $UAGServer"}
+            } else { $UAGServerRest = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/monitor/stats" -Credential $Credential }
+        } Catch { throw "Unable to connect to VMware UAG: $UAGServer" }
 
         # Generate report if connection to UAG Server Connection is successful
         if ($UAGServerRest.accessPointStatusAndStats.overAllStatus.status) {
-            section -Style Heading1 "Universal Access Gateway (UAG) - $($($UAGServer).split('.')[0].ToUpper())" {
+            Section -Style Heading1 "Universal Access Gateway (UAG) - $($($UAGServer).split('.')[0].ToUpper())" {
                 Paragraph "The following section provides a summary of the implemented components on the VMware UAG infrastructure."
-                if($InfoLevel.UAG.EdgeServices -ge 1 -or $InfoLevel.UAG.AuthenticationSettings -ge 1){
-                    section -Style Heading2 "General Settings" {
-                        if($InfoLevel.UAG.EdgeServices -ge 1){
-                            section -Style Heading3 "Edge Service Settings" {
+                if ($InfoLevel.UAG.EdgeServices -ge 1 -or $InfoLevel.UAG.AuthenticationSettings -ge 1) {
+                    Section -Style Heading2 "General Settings" {
+                        if ($InfoLevel.UAG.EdgeServices -ge 1) {
+                            Section -Style Heading3 "Edge Service Settings" {
                                 Get-AbrEdgeServiceSetting
                             }
                         }
-                        if($InfoLevel.UAG.AuthenticationSettings -ge 1){
-                            section -Style Heading3 "Authentication Settings" {
+                        if ($InfoLevel.UAG.AuthenticationSettings -ge 1) {
+                            Section -Style Heading3 "Authentication Settings" {
                                 Get-AbrRSASecureID
                                 Get-AbrRadius
                                 Get-AbrX509Certificate
@@ -112,10 +112,10 @@
                         }
                     }
                 }
-                if($InfoLevel.UAG.AdvancedSettings -ge 1 -or $InfoLevel.UAG.IdentityBridgeingSettings -ge 1){
-                    section -Style Heading2 "Advanced Settings" {
-                        if($InfoLevel.UAG.AdvancedSettings -ge 1){
-                            section -Style Heading3 "Advanced Settings - Subsection" {
+                if ($InfoLevel.UAG.AdvancedSettings -ge 1 -or $InfoLevel.UAG.IdentityBridgeingSettings -ge 1) {
+                    Section -Style Heading2 "Advanced Settings" {
+                        if ($InfoLevel.UAG.AdvancedSettings -ge 1) {
+                            Section -Style Heading3 "Advanced Settings - Subsection" {
                                 Get-AbrSystemConfiguration
                                 Get-AbrNetworkSetting
                                 Get-AbrHighAvailability
@@ -132,8 +132,8 @@
                                 Get-AbrSyslogSetting
                             }
                         }
-                        if($InfoLevel.UAG.IdentityBridgeingSettings -ge 1){
-                            section -Style Heading3 "Identity Bridging Settings" {
+                        if ($InfoLevel.UAG.IdentityBridgeingSettings -ge 1) {
+                            Section -Style Heading3 "Identity Bridging Settings" {
                                 Get-AbrUploadIdenityProviderMeta
                                 Get-AbrKeyTabSetting
                                 Get-AbrRealmSetting
@@ -143,10 +143,10 @@
 
                     }
                 }
-                if($InfoLevel.UAG.SupportSettings -ge 1){
-                    section -Style Heading2 "Support Settings" {
+                if ($InfoLevel.UAG.SupportSettings -ge 1) {
+                    Section -Style Heading2 "Support Settings" {
                         #section -Style Heading3 "Support Settings" {
-                            Get-AbrLogLevelSetting
+                        Get-AbrLogLevelSetting
                         #}
                     }
                 }

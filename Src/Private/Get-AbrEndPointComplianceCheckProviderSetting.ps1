@@ -22,7 +22,7 @@ function Get-AbrEndPointComplianceCheckProviderSetting {
 
     begin {
         Write-PScriboMessage "Endpoint Compliance Check Provider Settings InfoLevel set at $($InfoLevel.UAG.AdvancedSettings)."
-        Write-PscriboMessage "Collecting UAG Endpoint Compliance Check Provider Settings information."
+        Write-PScriboMessage "Collecting UAG Endpoint Compliance Check Provider Settings information."
     }
 
     process {
@@ -30,9 +30,9 @@ function Get-AbrEndPointComplianceCheckProviderSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $DevicePolicy = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/devicepolicy/configured" -Credential $Credential
-                } else {$DevicePolicy = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/devicepolicy/configured" -Credential $Credential}
+                } else { $DevicePolicy = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/devicepolicy/configured" -Credential $Credential }
                 if ($DevicePolicy.devicePolicySettingsList) {
-                    section -Style Heading4 "Endpoint Compliance Check Provider Settings" {
+                    Section -Style Heading4 "Endpoint Compliance Check Provider Settings" {
                         Paragraph "The following section will provide details on Endpoint Compliance Check Provider Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
 
@@ -75,10 +75,9 @@ function Get-AbrEndPointComplianceCheckProviderSetting {
                                 'macOS Agent File refresh interval (secs)' = $DevicePolicy
                             }
                             $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                            }
-                            catch {
-                                Write-PscriboMessage -IsWarning $_.Exception.Message
-                            }
+                        } catch {
+                            Write-PScriboMessage -IsWarning $_.Exception.Message
+                        }
 
                         $TableParams = @{
                             Name = "Endpoint Compliance Check Provider Settings - $($WorkspaceOneIntel.Name)"
@@ -91,9 +90,8 @@ function Get-AbrEndPointComplianceCheckProviderSetting {
                         $OutObj | Table @TableParams
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

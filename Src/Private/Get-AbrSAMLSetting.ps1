@@ -22,7 +22,7 @@ function Get-AbrSAMLSetting {
 
     begin {
         Write-PScriboMessage "SAML Settings InfoLevel set at $($InfoLevel.UAG.AuthenticationSettings)."
-        Write-PscriboMessage "Collecting UAG SAML Settings information."
+        Write-PScriboMessage "Collecting UAG SAML Settings information."
     }
 
     process {
@@ -30,15 +30,15 @@ function Get-AbrSAMLSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $SAMLSettings = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/sp-metadata" -Credential $Credential
-                } else {$SAMLSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/sp-metadata" -Credential $Credential}
+                } else { $SAMLSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/sp-metadata" -Credential $Credential }
                 if ($SAMLSettings.items) {
-                    section -Style Heading4 "SAML Settings" {
+                    Section -Style Heading4 "SAML Settings" {
                         Paragraph "The following section will provide details for SAML Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
                         foreach ($SAMLSetting in $SAMLSettings.items) {
                             if ($SAMLSetting) {
                                 $OutObj = @()
-                                section -Style Heading5 "SAML Settings - $($SAMLSetting.spName)" {
+                                Section -Style Heading5 "SAML Settings - $($SAMLSetting.spName)" {
                                     try {
                                         $inObj = [ordered] @{
                                             "SP Name" = $SAMLSetting.spName
@@ -46,10 +46,9 @@ function Get-AbrSAMLSetting {
                                             'Assertion Lifetime' = $SAMLSetting.assertionLifetime
                                         }
                                         $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                        }
-                                        catch {
-                                            Write-PscriboMessage -IsWarning $_.Exception.Message
-                                        }
+                                    } catch {
+                                        Write-PScriboMessage -IsWarning $_.Exception.Message
+                                    }
 
                                     $TableParams = @{
                                         Name = "SAML Settings - $($SAMLSetting.spName)"
@@ -65,9 +64,8 @@ function Get-AbrSAMLSetting {
                         }
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

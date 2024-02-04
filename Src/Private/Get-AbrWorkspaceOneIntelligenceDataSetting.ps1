@@ -22,7 +22,7 @@ function Get-AbrWorkspaceOneIntelligenceDataSetting {
 
     begin {
         Write-PScriboMessage "Workspace One Intelligence Data Settings InfoLevel set at $($InfoLevel.UAG.AdvancedSettings)."
-        Write-PscriboMessage "Collecting UAG Workspace One Intelligence Data Settings."
+        Write-PScriboMessage "Collecting UAG Workspace One Intelligence Data Settings."
     }
 
     process {
@@ -30,9 +30,9 @@ function Get-AbrWorkspaceOneIntelligenceDataSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $WorkspaceOneData = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/ws1intelligencedata" -Credential $Credential
-                } else {$WorkspaceOneData = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/ws1intelligencedata" -Credential $Credential}
+                } else { $WorkspaceOneData = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/ws1intelligencedata" -Credential $Credential }
                 if ($WorkspaceOneData) {
-                    section -Style Heading4 "Workspace One Intelligence Data Settings" {
+                    Section -Style Heading4 "Workspace One Intelligence Data Settings" {
                         Paragraph "The following section will provide details on Workspace One Intelligence Data Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
                         $OutObj = @()
@@ -45,10 +45,9 @@ function Get-AbrWorkspaceOneIntelligenceDataSetting {
 
                             }
                             $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                            }
-                            catch {
-                                Write-PscriboMessage -IsWarning $_.Exception.Message
-                            }
+                        } catch {
+                            Write-PScriboMessage -IsWarning $_.Exception.Message
+                        }
 
                         $TableParams = @{
                             Name = "Workspace One Intelligence Data Settings - $($($UAGServer).split('.')[0].ToUpper())"
@@ -61,9 +60,8 @@ function Get-AbrWorkspaceOneIntelligenceDataSetting {
                         $OutObj | Table @TableParams
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

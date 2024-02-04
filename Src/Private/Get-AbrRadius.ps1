@@ -22,20 +22,22 @@ function Get-AbrRadius {
 
     begin {
         Write-PScriboMessage "Radius Settings InfoLevel set at $($InfoLevel.UAG.AuthenticationSettings)."
-        Write-PscriboMessage "Collecting UAG Radius Settings information."
+        Write-PScriboMessage "Collecting UAG Radius Settings information."
     }
 
     process {
         if ($InfoLevel.UAG.AuthenticationSettings -ge 1) {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
-                    try{$AuthRadius = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/radius-auth" -Credential $Credential}
-                    catch {Write-PScriboMessage -IsWarning "Unable to collect UAG Radius information"}
-                } else {try {$AuthRadius = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/radius-auth" -Credential $Credential}
-                        catch {Write-PScriboMessage -IsWarning "Unable to collect UAG Radius information"}}
+                    try { $AuthRadius = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/radius-auth" -Credential $Credential }
+                    catch { Write-PScriboMessage -IsWarning "Unable to collect UAG Radius information" }
+                } else {
+                    try { $AuthRadius = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/radius-auth" -Credential $Credential }
+                    catch { Write-PScriboMessage -IsWarning "Unable to collect UAG Radius information" }
+                }
                 if ($AuthRadius) {
                     $OutObj = @()
-                    section -Style Heading3 "Radius Settings" {
+                    Section -Style Heading3 "Radius Settings" {
                         Paragraph "The following section will provide details for Radius Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
                         try {
@@ -71,10 +73,9 @@ function Get-AbrRadius {
                                 "Class Name" = $AuthRadius.className
                             }
                             $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                            }
-                            catch {
-                                Write-PscriboMessage -IsWarning $_.Exception.Message
-                            }
+                        } catch {
+                            Write-PScriboMessage -IsWarning $_.Exception.Message
+                        }
 
                         $TableParams = @{
                             Name = "Radius Settings - $($($UAGServer).split('.')[0].ToUpper())"
@@ -87,9 +88,8 @@ function Get-AbrRadius {
                         $OutObj | Table @TableParams
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

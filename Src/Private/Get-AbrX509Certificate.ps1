@@ -22,7 +22,7 @@ function Get-AbrX509Certificate {
 
     begin {
         Write-PScriboMessage "X509 Certificate Settings InfoLevel set at $($InfoLevel.UAG.AuthenticationSettings)."
-        Write-PscriboMessage "Collecting UAG X509 Certificate Settings information."
+        Write-PScriboMessage "Collecting UAG X509 Certificate Settings information."
     }
 
     process {
@@ -30,10 +30,10 @@ function Get-AbrX509Certificate {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $AuthCert = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/certificate-auth" -Credential $Credential
-                } else {$AuthCert = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/certificate-auth" -Credential $Credential}
+                } else { $AuthCert = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/certificate-auth" -Credential $Credential }
                 if ($AuthCert) {
                     $OutObj = @()
-                    section -Style Heading4 "X509 Certificate Settings" {
+                    Section -Style Heading4 "X509 Certificate Settings" {
                         Paragraph "The following section will provide details for X509 Certificate Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
                         try {
@@ -52,10 +52,9 @@ function Get-AbrX509Certificate {
                                 "Consent Form Content" = $AuthCert.consentForm
                             }
                             $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                            }
-                            catch {
-                                Write-PscriboMessage -IsWarning $_.Exception.Message
-                            }
+                        } catch {
+                            Write-PScriboMessage -IsWarning $_.Exception.Message
+                        }
 
                         $TableParams = @{
                             Name = "X509 Certificate Settings - $($($UAGServer).split('.')[0].ToUpper())"
@@ -68,9 +67,8 @@ function Get-AbrX509Certificate {
                         $OutObj | Table @TableParams
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

@@ -22,7 +22,7 @@ function Get-AbrWorkspaceOneIntelligenceConnectionSetting {
 
     begin {
         Write-PScriboMessage "Workspace One Intelligence Connection Settings InfoLevel set at $($InfoLevel.UAG.AdvancedSettings)."
-        Write-PscriboMessage "Collecting UAG Workspace One Intelligence Connection Settings information."
+        Write-PScriboMessage "Collecting UAG Workspace One Intelligence Connection Settings information."
     }
 
     process {
@@ -30,15 +30,15 @@ function Get-AbrWorkspaceOneIntelligenceConnectionSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $WorkspaceOneIntel = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/ws1intelligence" -Credential $Credential
-                } else {$WorkspaceOneIntel = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/ws1intelligence" -Credential $Credential}
+                } else { $WorkspaceOneIntel = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/ws1intelligence" -Credential $Credential }
                 if ($WorkspaceOneIntel.workspaceOneIntelligenceSettingsList) {
-                    section -Style Heading4 "Workspace One Intelligence Connection Settings" {
+                    Section -Style Heading4 "Workspace One Intelligence Connection Settings" {
                         Paragraph "The following section will provide details on Workspace One Intelligence Connection Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
 
-                        foreach($WorkspaceOneInt in $WorkspaceOneIntel.workspaceOneIntelligenceSettingsList){
+                        foreach ($WorkspaceOneInt in $WorkspaceOneIntel.workspaceOneIntelligenceSettingsList) {
                             if ($WorkspaceOneInt) {
-                                section -Style Heading5 "Workspace One Intelligence Connection Settings - $($WorkspaceOneIntel.Name)" {
+                                Section -Style Heading5 "Workspace One Intelligence Connection Settings - $($WorkspaceOneIntel.Name)" {
                                     $OutObj = @()
 
                                     try {
@@ -48,10 +48,9 @@ function Get-AbrWorkspaceOneIntelligenceConnectionSetting {
                                             "Trusted Certs" = $($WorkspaceOneIntel.trustedCertificates -join ', ')
                                         }
                                         $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                        }
-                                        catch {
-                                            Write-PscriboMessage -IsWarning $_.Exception.Message
-                                        }
+                                    } catch {
+                                        Write-PScriboMessage -IsWarning $_.Exception.Message
+                                    }
 
                                     $TableParams = @{
                                         Name = "Workspace One Intelligence Connection Settings - $($WorkspaceOneIntel.Name)"
@@ -67,9 +66,8 @@ function Get-AbrWorkspaceOneIntelligenceConnectionSetting {
                         }
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

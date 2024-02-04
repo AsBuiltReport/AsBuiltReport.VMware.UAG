@@ -22,7 +22,7 @@ function Get-AbrOutboundProxySetting {
 
     begin {
         Write-PScriboMessage "Outbound Proxy Settings InfoLevel set at $($InfoLevel.UAG.AdvancedSettings)."
-        Write-PscriboMessage "Collecting UAG Outbound Proxy Settings information."
+        Write-PScriboMessage "Collecting UAG Outbound Proxy Settings information."
     }
 
     process {
@@ -30,15 +30,15 @@ function Get-AbrOutboundProxySetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $Proxys = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/proxy" -Credential $Credential
-                } else {$Proxys = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/proxy" -Credential $Credential}
+                } else { $Proxys = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/proxy" -Credential $Credential }
                 if ($Proxys.outboundProxySettingsList) {
-                    section -Style Heading4 "Outbound Proxy Settings" {
+                    Section -Style Heading4 "Outbound Proxy Settings" {
                         Paragraph "The following section will provide details on Outbound Proxy Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
 
-                        Foreach($Proxy in $Proxys.outboundProxySettingsList){
-                            If($Proxy){
-                                section -Style Heading5 "Outbound Proxy Settings - $($Proxy.Name)" {
+                        Foreach ($Proxy in $Proxys.outboundProxySettingsList) {
+                            If ($Proxy) {
+                                Section -Style Heading5 "Outbound Proxy Settings - $($Proxy.Name)" {
                                     $OutObj = @()
 
                                     try {
@@ -50,10 +50,9 @@ function Get-AbrOutboundProxySetting {
                                             'Trusted Certificates' = $($Proxy.trustedCertificates.name -join "`n")
                                         }
                                         $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                        }
-                                        catch {
-                                            Write-PscriboMessage -IsWarning $_.Exception.Message
-                                        }
+                                    } catch {
+                                        Write-PScriboMessage -IsWarning $_.Exception.Message
+                                    }
 
                                     $TableParams = @{
                                         Name = "Outbound Proxy Settings - $($Proxy.Name)"
@@ -69,9 +68,8 @@ function Get-AbrOutboundProxySetting {
                         }
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

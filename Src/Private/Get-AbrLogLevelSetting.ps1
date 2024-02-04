@@ -22,7 +22,7 @@ function Get-AbrLogLevelSetting {
 
     begin {
         Write-PScriboMessage "Log Level Settings InfoLevel set at $($InfoLevel.UAG.SupportSettings)."
-        Write-PscriboMessage "Collecting UAG Log Level Settings information."
+        Write-PScriboMessage "Collecting UAG Log Level Settings information."
     }
 
     process {
@@ -30,10 +30,10 @@ function Get-AbrLogLevelSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $LogLevelSettings = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/monitor/getLogLevels" -Credential $Credential
-                } else {$LogLevelSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/monitor/getLogLevels" -Credential $Credential}
+                } else { $LogLevelSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/monitor/getLogLevels" -Credential $Credential }
                 if ($LogLevelSettings) {
                     $OutObj = @()
-                    section -Style Heading3 "Log Level Settings" {
+                    Section -Style Heading3 "Log Level Settings" {
                         Paragraph "The following section will provide details for Log Level Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
                         try {
@@ -51,10 +51,9 @@ function Get-AbrLogLevelSetting {
                                 'Web Reverse Proxy Edge Service - All' = $LogLevelSettings.WRP_ALL
                             }
                             $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                            }
-                            catch {
-                                Write-PscriboMessage -IsWarning $_.Exception.Message
-                            }
+                        } catch {
+                            Write-PScriboMessage -IsWarning $_.Exception.Message
+                        }
 
                         $TableParams = @{
                             Name = "Log Level Settings - $($($UAGServer).split('.')[0].ToUpper())"
@@ -67,9 +66,8 @@ function Get-AbrLogLevelSetting {
                         $OutObj | Table @TableParams
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

@@ -22,7 +22,7 @@ function Get-AbrEdgeServiceSetting {
 
     begin {
         Write-PScriboMessage "Edge Services InfoLevel set at $($InfoLevel.UAG.EdgeServices)."
-        Write-PscriboMessage "Collecting UAG Horizon Settings information."
+        Write-PScriboMessage "Collecting UAG Horizon Settings information."
     }
 
     process {
@@ -30,26 +30,26 @@ function Get-AbrEdgeServiceSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $EdgeServiceSettings = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/edgeservice" -Credential $Credential
-                } else {$EdgeServiceSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/edgeservice" -Credential $Credential}
+                } else { $EdgeServiceSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/edgeservice" -Credential $Credential }
                 if ($EdgeServiceSettings.edgeServiceSettingsList.enabled -like 'true') {
                     Paragraph "The following section will provide details on Edge Service Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                     BlankLine
                     $OutObj = @()
                     foreach ($EdgeServiceSetting in $EdgeServiceSettings.edgeServiceSettingsList) {
                         if ($EdgeServiceSetting.identifier -eq 'VIEW') {
-                            section -Style Heading4 "Horizon Settings" {
-                                if($null -ne $EdgeServiceSetting.trustedCertificates) {
+                            Section -Style Heading4 "Horizon Settings" {
+                                if ($null -ne $EdgeServiceSetting.trustedCertificates) {
                                     $trustedCertificatesData = $EdgeServiceSetting.trustedCertificates.name -join "`n"
-                                }else { $trustedCertificatesData = $null}
-                                if($null -ne $EdgeServiceSetting.hostEntries) {
+                                } else { $trustedCertificatesData = $null }
+                                if ($null -ne $EdgeServiceSetting.hostEntries) {
                                     $hostEntriesData = $EdgeServiceSetting.hostEntries -join "`n"
-                                }else { $hostEntriesData = $null }
-                                if($null -ne $EdgeServiceSetting.customExecutableList) {
+                                } else { $hostEntriesData = $null }
+                                if ($null -ne $EdgeServiceSetting.customExecutableList) {
                                     $clientCustomExecutablesData = $EdgeServiceSetting.customExecutableList -join "`n"
-                                }else { $clientCustomExecutablesData = $null }
-                                if($null -ne $EdgeServiceSetting.customExecutableList) {
+                                } else { $clientCustomExecutablesData = $null }
+                                if ($null -ne $EdgeServiceSetting.customExecutableList) {
                                     $SAMLAudiences = $EdgeServiceSetting.customExecutableList -join "`n"
-                                }else { $SAMLAudiences = $null }
+                                } else { $SAMLAudiences = $null }
 
                                 $securityHeaders = $EdgeServiceSetting.securityHeaders | Out-String
 
@@ -101,10 +101,9 @@ function Get-AbrEdgeServiceSetting {
                                         'Disable HTML Access' = $EdgeServiceSetting.disableHtmlAccess
                                     }
                                     $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                    }
-                                    catch {
-                                        Write-PscriboMessage -IsWarning $_.Exception.Message
-                                    }
+                                } catch {
+                                    Write-PScriboMessage -IsWarning $_.Exception.Message
+                                }
 
                                 $TableParams += @{
                                     Name = "Horizon Settings Summary - $($($UAGServer).split('.')[0].ToUpper())"
@@ -118,16 +117,16 @@ function Get-AbrEdgeServiceSetting {
                             }
                         }
                         if ($EdgeServiceSetting.identifier -eq 'WEB_REVERSE_PROXY') {
-                            section -Style Heading4 "Reverse Proxy Settings" {
-                                foreach($ProxySetting in ($EdgeServiceSetting | Where-Object {$_.identifier -eq 'WEB_REVERSE_PROXY'})){
-                                    if($null -ne $EdgeServiceSetting.trustedCertificates) {
+                            Section -Style Heading4 "Reverse Proxy Settings" {
+                                foreach ($ProxySetting in ($EdgeServiceSetting | Where-Object { $_.identifier -eq 'WEB_REVERSE_PROXY' })) {
+                                    if ($null -ne $EdgeServiceSetting.trustedCertificates) {
                                         $trustedCertificatesDataProxy = $EdgeServiceSetting.trustedCertificates.name -join "`n"
-                                    }else { $trustedCertificatesDataProxy = $null}
-                                    if($null -ne $EdgeServiceSetting.hostEntries) {
+                                    } else { $trustedCertificatesDataProxy = $null }
+                                    if ($null -ne $EdgeServiceSetting.hostEntries) {
                                         $hostEntriesDataProxy = $EdgeServiceSetting.hostEntries -join "`n"
-                                    }else { $hostEntriesDataProxy = $null }
+                                    } else { $hostEntriesDataProxy = $null }
 
-                                    section -Style Heading4 "Reverse Proxy Settings - $($EdgeServiceSetting.instanceId)" {
+                                    Section -Style Heading4 "Reverse Proxy Settings - $($EdgeServiceSetting.instanceId)" {
                                         $securityHeaders = $EdgeServiceSetting.securityHeaders | Out-String
                                         try {
                                             $inObj = [ordered] @{
@@ -159,9 +158,8 @@ function Get-AbrEdgeServiceSetting {
 
                                             }
                                             $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                        }
-                                        catch {
-                                            Write-PscriboMessage -IsWarning $_.Exception.Message
+                                        } catch {
+                                            Write-PScriboMessage -IsWarning $_.Exception.Message
                                         }
 
                                         $TableParams += @{
@@ -178,55 +176,54 @@ function Get-AbrEdgeServiceSetting {
                             }
                         }
                         if ($EdgeServiceSetting.identifier -eq 'TUNNEL_GATEWAY') {
-                            section -Style Heading4 "Tunnel Settings" {
-                                if($null -ne $EdgeServiceSetting.trustedCertificates) {
+                            Section -Style Heading4 "Tunnel Settings" {
+                                if ($null -ne $EdgeServiceSetting.trustedCertificates) {
                                     $trustedCertificates = $EdgeServiceSetting.trustedCertificates -join "`n"
-                                }else { $trustedCertificates = $null}
-                                if($null -ne $EdgeServiceSetting.hostEntries) {
+                                } else { $trustedCertificates = $null }
+                                if ($null -ne $EdgeServiceSetting.hostEntries) {
                                     $hostEntriesDataTunnel = $EdgeServiceSetting.hostEntries -join "`n"
-                                }else { $hostEntriesDataTunnel = $null }
+                                } else { $hostEntriesDataTunnel = $null }
 
-                                    try {
-                                        $inObj = [ordered] @{
-                                            "Enable Tunnel Proxy" = $EdgeServiceSetting.enabled
-                                            'API Server URL' = $EdgeServiceSetting.apiServerUrl
-                                            'API Server Username' = $EdgeServiceSetting.apiServerUsername
-                                            'Tunnel Server Hostname' = $EdgeServiceSetting.airwatchServerHostname
-                                            'Organization Group ID' = $EdgeServiceSetting.organizationGroupCode
-                                            'Tunnel Configuration ID' = $EdgeServiceSetting.tunnelConfigurationId
-                                            'Lock Configuration' = $EdgeServiceSetting.disableAutoConfigUpdate
-                                            'Outbound Proxy Host' = $EdgeServiceSetting.outboundProxyHost
-                                            'Outbound Proxy Port' = $EdgeServiceSetting.outboundProxyPort
-                                            'Outbound Proxy Username' = $EdgeServiceSetting.outboundProxyUsername
-                                            'Enable NTLM Authentication' = $EdgeServiceSetting.ntlmAuthentication
-                                            'Trusted Certificates' = $trustedCertificatesData
-                                            'Host Entries' = $hostEntriesDataTunnel
-                                        }
-                                        $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
+                                try {
+                                    $inObj = [ordered] @{
+                                        "Enable Tunnel Proxy" = $EdgeServiceSetting.enabled
+                                        'API Server URL' = $EdgeServiceSetting.apiServerUrl
+                                        'API Server Username' = $EdgeServiceSetting.apiServerUsername
+                                        'Tunnel Server Hostname' = $EdgeServiceSetting.airwatchServerHostname
+                                        'Organization Group ID' = $EdgeServiceSetting.organizationGroupCode
+                                        'Tunnel Configuration ID' = $EdgeServiceSetting.tunnelConfigurationId
+                                        'Lock Configuration' = $EdgeServiceSetting.disableAutoConfigUpdate
+                                        'Outbound Proxy Host' = $EdgeServiceSetting.outboundProxyHost
+                                        'Outbound Proxy Port' = $EdgeServiceSetting.outboundProxyPort
+                                        'Outbound Proxy Username' = $EdgeServiceSetting.outboundProxyUsername
+                                        'Enable NTLM Authentication' = $EdgeServiceSetting.ntlmAuthentication
+                                        'Trusted Certificates' = $trustedCertificatesData
+                                        'Host Entries' = $hostEntriesDataTunnel
                                     }
-                                    catch {
-                                        Write-PscriboMessage -IsWarning $_.Exception.Message
-                                    }
+                                    $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
+                                } catch {
+                                    Write-PScriboMessage -IsWarning $_.Exception.Message
+                                }
 
-                                    $TableParams += @{
-                                        Name = "Tunnel Settings - $($($UAGServer).split('.')[0].ToUpper())"
-                                        List = $true
-                                        ColumnWidths = 40, 60
-                                    }
-                                    if ($Report.ShowTableCaptions) {
-                                        $TableParams['Caption'] = "- $($TableParams.Name)"
-                                    }
-                                    $OutObj | Sort-Object -Property Name | Table @TableParams
+                                $TableParams += @{
+                                    Name = "Tunnel Settings - $($($UAGServer).split('.')[0].ToUpper())"
+                                    List = $true
+                                    ColumnWidths = 40, 60
+                                }
+                                if ($Report.ShowTableCaptions) {
+                                    $TableParams['Caption'] = "- $($TableParams.Name)"
+                                }
+                                $OutObj | Sort-Object -Property Name | Table @TableParams
                             }
                         }
                         if ($EdgeServiceSetting.identifier -eq 'SEG') {
-                            section -Style Heading4 "Secure Email Gateway" {
-                                if($null -ne $EdgeServiceSetting.trustedCertificates) {
+                            Section -Style Heading4 "Secure Email Gateway" {
+                                if ($null -ne $EdgeServiceSetting.trustedCertificates) {
                                     $trustedCertificates = $EdgeServiceSetting.trustedCertificates -join "`n"
-                                }else { $trustedCertificates = $null}
-                                if($null -ne $EdgeServiceSetting.hostEntries) {
+                                } else { $trustedCertificates = $null }
+                                if ($null -ne $EdgeServiceSetting.hostEntries) {
                                     $hostEntriesDataSEG = $EdgeServiceSetting.hostEntries -join "`n"
-                                }else { $hostEntriesDataSEG = $null }
+                                } else { $hostEntriesDataSEG = $null }
                                 try {
                                     $inObj = [ordered] @{
                                         "Enable Tunnel Proxy" = $EdgeServiceSetting.enabled
@@ -248,9 +245,8 @@ function Get-AbrEdgeServiceSetting {
                                         'Service Installation Message' = $EdgeServiceSetting.serviceInstallationMessage
                                     }
                                     $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                }
-                                catch {
-                                    Write-PscriboMessage -IsWarning $_.Exception.Message
+                                } catch {
+                                    Write-PScriboMessage -IsWarning $_.Exception.Message
                                 }
 
                                 $TableParams += @{
@@ -265,13 +261,13 @@ function Get-AbrEdgeServiceSetting {
                             }
                         }
                         if ($EdgeServiceSetting.identifier -eq 'CONTENT_GATEWAY') {
-                            section -Style Heading4 "Content Gateway" {
-                                if($null -ne $EdgeServiceSetting.trustedCertificates) {
+                            Section -Style Heading4 "Content Gateway" {
+                                if ($null -ne $EdgeServiceSetting.trustedCertificates) {
                                     $trustedCertificates = $EdgeServiceSetting.trustedCertificates -join "`n"
-                                }else { $trustedCertificates = $null}
-                                if($null -ne $EdgeServiceSetting.hostEntries) {
+                                } else { $trustedCertificates = $null }
+                                if ($null -ne $EdgeServiceSetting.hostEntries) {
                                     $hostEntriesDataCG = $EdgeServiceSetting.hostEntries -join "`n"
-                                }else { $hostEntriesDataCG = $null }
+                                } else { $hostEntriesDataCG = $null }
                                 try {
                                     $inObj = [ordered] @{
                                         "Enable Content Gateway Proxy" = $EdgeServiceSetting.enabled
@@ -292,9 +288,8 @@ function Get-AbrEdgeServiceSetting {
 
                                     }
                                     $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                }
-                                catch {
-                                    Write-PscriboMessage -IsWarning $_.Exception.Message
+                                } catch {
+                                    Write-PScriboMessage -IsWarning $_.Exception.Message
                                 }
 
                                 $TableParams += @{
@@ -311,9 +306,8 @@ function Get-AbrEdgeServiceSetting {
 
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

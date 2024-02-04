@@ -22,7 +22,7 @@ function Get-AbrSyslogSetting {
 
     begin {
         Write-PScriboMessage "Syslog Server Settings InfoLevel set at $($InfoLevel.UAG.AdvancedSettings)."
-        Write-PscriboMessage "Collecting UAG Syslog Server Settings information."
+        Write-PScriboMessage "Collecting UAG Syslog Server Settings information."
     }
 
     process {
@@ -30,15 +30,15 @@ function Get-AbrSyslogSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $Syslogs = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/syslog" -Credential $Credential
-                } else {$Syslogs = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/syslog" -Credential $Credential}
+                } else { $Syslogs = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/syslog" -Credential $Credential }
                 if ($Syslogs.syslogServerSettings) {
-                    section -Style Heading4 "Syslog Server Settings" {
+                    Section -Style Heading4 "Syslog Server Settings" {
                         Paragraph "The following section will provide details on Syslog Server Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
 
                         foreach ($Syslog in $Syslogs.syslogServerSettings) {
-                            if($Syslog) {
-                                section -Style Heading5 "Syslog Server Settings - $($Syslog.syslogSettingName)" {
+                            if ($Syslog) {
+                                Section -Style Heading5 "Syslog Server Settings - $($Syslog.syslogSettingName)" {
                                     $OutObj = @()
                                     try {
                                         $inObj = [ordered] @{
@@ -55,10 +55,9 @@ function Get-AbrSyslogSetting {
 
                                         }
                                         $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                        }
-                                        catch {
-                                            Write-PscriboMessage -IsWarning $_.Exception.Message
-                                        }
+                                    } catch {
+                                        Write-PScriboMessage -IsWarning $_.Exception.Message
+                                    }
 
                                     $TableParams = @{
                                         Name = "Syslog Server Settings - $($Syslog.syslogSettingName)"
@@ -74,9 +73,8 @@ function Get-AbrSyslogSetting {
                         }
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

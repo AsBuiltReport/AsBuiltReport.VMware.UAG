@@ -22,7 +22,7 @@ function Get-AbrClientCustomExecutable {
 
     begin {
         Write-PScriboMessage "Client Custom Executable InfoLevel set at $($InfoLevel.UAG.AdvancedSettings)."
-        Write-PscriboMessage "Collecting UAG Client Custom Executable information."
+        Write-PScriboMessage "Collecting UAG Client Custom Executable information."
     }
 
     process {
@@ -30,23 +30,23 @@ function Get-AbrClientCustomExecutable {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $CustomExecutables = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/resource" -Credential $Credential
-                } else {$CustomExecutables = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/resource" -Credential $Credential}
+                } else { $CustomExecutables = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/resource" -Credential $Credential }
                 if ($CustomExecutables.customExecutableList) {
-                    section -Style Heading4 "Client Custom Executables" {
+                    Section -Style Heading4 "Client Custom Executables" {
                         Paragraph "The following section will provide details on custom executables on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
 
-                        foreach($CustomExecutable in $CustomExecutables.customExecutableList){
-                            If($CustomExecutable){
-                                section -Style Heading5 "Client Custom Executables - $($CustomExecutable.hostedResourceMetadata.name)" {
+                        foreach ($CustomExecutable in $CustomExecutables.customExecutableList) {
+                            If ($CustomExecutable) {
+                                Section -Style Heading5 "Client Custom Executables - $($CustomExecutable.hostedResourceMetadata.name)" {
 
-                                    if($null -ne $CustomExecutable.resourceURLSettings.trustedCertificates.name) {
+                                    if ($null -ne $CustomExecutable.resourceURLSettings.trustedCertificates.name) {
                                         $TrustedCerts = $CustomExecutable.resourceURLSettings.trustedCertificates.name -join "`n"
-                                    }else { $TrustedCerts = $null}
+                                    } else { $TrustedCerts = $null }
 
-                                    if($null -ne $CustomExecutable.hostedResourceMetadata.trustedSigningCertificate.name) {
+                                    if ($null -ne $CustomExecutable.hostedResourceMetadata.trustedSigningCertificate.name) {
                                         $TrustedSigning = $CustomExecutable.hostedResourceMetadata.trustedSigningCertificate.name -join "`n"
-                                    }else { $TrustedSigning = $null}
+                                    } else { $TrustedSigning = $null }
 
                                     $OutObj = @()
                                     try {
@@ -67,9 +67,8 @@ function Get-AbrClientCustomExecutable {
                                             'URL Response Refresh Interval' = $CustomExecutable.resourceURLSettings.urlResponseRefreshInterval
                                         }
                                         $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                    }
-                                    catch {
-                                        Write-PscriboMessage -IsWarning $_.Exception.Message
+                                    } catch {
+                                        Write-PScriboMessage -IsWarning $_.Exception.Message
                                     }
 
                                     $TableParams = @{
@@ -86,9 +85,8 @@ function Get-AbrClientCustomExecutable {
                         }
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

@@ -22,7 +22,7 @@ function Get-AbrTLSServerCertificateSetting {
 
     begin {
         Write-PScriboMessage "TLS Server Certificate Settings InfoLevel set at $($InfoLevel.UAG.AdvancedSettings)."
-        Write-PscriboMessage "Collecting TLS Server Certificate Settings information."
+        Write-PScriboMessage "Collecting TLS Server Certificate Settings information."
     }
 
     process {
@@ -32,15 +32,16 @@ function Get-AbrTLSServerCertificateSetting {
                     $ServerCertConfig = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl" -Credential $Credential
                     $ServerCertAdmin = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl/admin" -Credential $Credential
                     $ServerCertEndUser = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl/end_User" -Credential $Credential
-                } else {$ServerCertConfig = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl" -Credential $Credential
-                        $ServerCertAdmin = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl/admin" -Credential $Credential
-                        $ServerCertEndUser = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl/end_User" -Credential $Credential
+                } else {
+                    $ServerCertConfig = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl" -Credential $Credential
+                    $ServerCertAdmin = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl/admin" -Credential $Credential
+                    $ServerCertEndUser = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl/end_User" -Credential $Credential
                 }
                 if ($ServerCertAdmin -or $ServerCertEndUser) {
-                    section -Style Heading4 "TLS Server Certificate Settings" {
+                    Section -Style Heading4 "TLS Server Certificate Settings" {
                         Paragraph "The following section will provide details for Admin TLS Server Certificate Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
-                        if ($ServerCertAdmin){
+                        if ($ServerCertAdmin) {
                             $index = @('')
                             $Cert = @('')
                             $certBytes = @('')
@@ -49,18 +50,18 @@ function Get-AbrTLSServerCertificateSetting {
                             $DNSList = @('')
 
                             $index = $ServerCertAdmin.IndexOf("-----END CERTIFICATE-----")
-                            if($index){
+                            if ($index) {
                                 $Cert = $ServerCertAdmin.Substring(0, $index)
-                                if($Cert){
+                                if ($Cert) {
                                     # Convert the certificate data to a byte array
                                     $certBytes = [System.Convert]::FromBase64String($Cert -replace '-.*-')
 
                                     # Create an X509Certificate2 object from the byte array
-                                    $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList @(,$certBytes)
-                                    if($cert){
+                                    $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList @(, $certBytes)
+                                    if ($cert) {
                                         # Split the string on the comma
                                         $CertParts = $Cert.SubjectName.Name.Split(',')
-                                        if($CertParts){
+                                        if ($CertParts) {
                                             # Get the CN and O parts and remove the prefix
                                             $cn = ($CertParts | Where-Object { $_.Trim().StartsWith('CN=') }).Trim().Substring(3)
                                             $o = ($CertParts | Where-Object { $_.Trim().StartsWith('O=') }).Trim().Substring(2)
@@ -71,12 +72,12 @@ function Get-AbrTLSServerCertificateSetting {
 
 
                             # Foreach $DNSlist Name create comma separated list
-                            if($null -ne $Cert.DnsNameList.unicode) {
+                            if ($null -ne $Cert.DnsNameList.unicode) {
                                 $DNSList = $Cert.DnsNameList.unicode -join "`n"
-                            }else { $DNSList = $null}
+                            } else { $DNSList = $null }
 
                             $OutObj = @()
-                            section -Style Heading5 "User TLS Server Certificate Settings" {
+                            Section -Style Heading5 "User TLS Server Certificate Settings" {
                                 try {
                                     $inObj = [ordered] @{
                                         "Admin TLS Server Cert Configured" = 'True'
@@ -95,10 +96,9 @@ function Get-AbrTLSServerCertificateSetting {
                                         'Handle' = $Cert.Handle
                                     }
                                     $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                    }
-                                    catch {
-                                        Write-PscriboMessage -IsWarning $_.Exception.Message
-                                    }
+                                } catch {
+                                    Write-PScriboMessage -IsWarning $_.Exception.Message
+                                }
 
                                 $TableParams = @{
                                     Name = "User Server Certificate Settings - $($($UAGServer).split('.')[0].ToUpper())"
@@ -111,7 +111,7 @@ function Get-AbrTLSServerCertificateSetting {
                                 $OutObj | Table @TableParams
                             }
                         }
-                        if ($ServerCertEndUser){
+                        if ($ServerCertEndUser) {
                             $index = @('')
                             $Cert = @('')
                             $certBytes = @('')
@@ -126,7 +126,7 @@ function Get-AbrTLSServerCertificateSetting {
                             $certBytes = [System.Convert]::FromBase64String($Cert -replace '-.*-')
 
                             # Create an X509Certificate2 object from the byte array
-                            $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList @(,$certBytes)
+                            $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList @(, $certBytes)
 
                             # Split the string on the comma
                             $CertParts = $Cert.SubjectName.Name.Split(',')
@@ -136,12 +136,12 @@ function Get-AbrTLSServerCertificateSetting {
                             $o = ($CertParts | Where-Object { $_.Trim().StartsWith('O=') }).Trim().Substring(2)
 
                             # Foreach $DNSlist Name create comma separated list
-                            if($null -ne $Cert.DnsNameList.unicode) {
+                            if ($null -ne $Cert.DnsNameList.unicode) {
                                 $DNSList = $Cert.DnsNameList.unicode -join "`n"
-                            }else { $DNSList = $null}
+                            } else { $DNSList = $null }
 
                             $OutObj = @()
-                            section -Style Heading5 "Admin TLS Server Certificate Settings" {
+                            Section -Style Heading5 "Admin TLS Server Certificate Settings" {
                                 try {
                                     $inObj = [ordered] @{
                                         "Admin TLS Server Cert Configured" = 'True'
@@ -160,10 +160,9 @@ function Get-AbrTLSServerCertificateSetting {
                                         'Handle' = $Cert.Handle
                                     }
                                     $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                    }
-                                    catch {
-                                        Write-PscriboMessage -IsWarning $_.Exception.Message
-                                    }
+                                } catch {
+                                    Write-PScriboMessage -IsWarning $_.Exception.Message
+                                }
 
                                 $TableParams = @{
                                     Name = "Admin Server Certificate Settings - $($($UAGServer).split('.')[0].ToUpper())"
@@ -178,9 +177,8 @@ function Get-AbrTLSServerCertificateSetting {
                         }
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

@@ -22,7 +22,7 @@ function Get-AbrApplianceUpdatesSetting {
 
     begin {
         Write-PScriboMessage "Appliance Update Settings InfoLevel set at $($InfoLevel.UAG.AdvancedSettings)."
-        Write-PscriboMessage "Collecting UAG Appliance Update Settings information."
+        Write-PScriboMessage "Collecting UAG Appliance Update Settings information."
     }
 
     process {
@@ -30,9 +30,9 @@ function Get-AbrApplianceUpdatesSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $PackageUpdates = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/packageupdates" -Credential $Credential
-                } else {$PackageUpdates = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/packageupdates" -Credential $Credential}
+                } else { $PackageUpdates = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/packageupdates" -Credential $Credential }
                 if ($PackageUpdates) {
-                    section -Style Heading4 "Appliance Update Settings" {
+                    Section -Style Heading4 "Appliance Update Settings" {
                         Paragraph "The following section will provide details on Appliance Update Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
                         $OutObj = @()
@@ -45,10 +45,9 @@ function Get-AbrApplianceUpdatesSetting {
                                 'Trusted Certificates' = $($PackageUpdates.trustedCertificates.name -join ', ')
                             }
                             $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                            }
-                            catch {
-                                Write-PscriboMessage -IsWarning $_.Exception.Message
-                            }
+                        } catch {
+                            Write-PScriboMessage -IsWarning $_.Exception.Message
+                        }
 
                         $TableParams = @{
                             Name = "Appliance Update Settings - $($($UAGServer).split('.')[0].ToUpper())"
@@ -61,9 +60,8 @@ function Get-AbrApplianceUpdatesSetting {
                         $OutObj | Table @TableParams
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

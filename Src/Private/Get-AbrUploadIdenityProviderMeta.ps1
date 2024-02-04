@@ -22,7 +22,7 @@ function Get-AbrUploadIdenityProviderMeta {
 
     begin {
         Write-PScriboMessage "Identity Provider Metadata Settings InfoLevel set at $($InfoLevel.UAG.IdentityBridgeingSettings)."
-        Write-PscriboMessage "Collecting UAG Identity Provider Metadata Settings information."
+        Write-PScriboMessage "Collecting UAG Identity Provider Metadata Settings information."
     }
 
     process {
@@ -30,14 +30,14 @@ function Get-AbrUploadIdenityProviderMeta {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $ExtMetadataSettings = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/idp-ext-metadata" -Credential $Credential
-                } else {$ExtMetadataSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/idp-ext-metadata" -Credential $Credential}
+                } else { $ExtMetadataSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/idp-ext-metadata" -Credential $Credential }
                 if ($ExtMetadataSettings.idPExternalMetadataSettingsList) {
-                    section -Style Heading4 "Identity Provider Metadata Settings" {
+                    Section -Style Heading4 "Identity Provider Metadata Settings" {
                         Paragraph "The following section will provide details on Identity Provider Metadata Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
                         foreach ($ExtMetadataSetting in $ExtMetadataSettings.idPExternalMetadataSettingsList) {
                             if ($ExtMetadataSetting) {
-                                section -Style Heading5 "Identity Provider Metadata Settings - $($ExtMetadataSetting.entityId)" {
+                                Section -Style Heading5 "Identity Provider Metadata Settings - $($ExtMetadataSetting.entityId)" {
                                     $OutObj = @()
                                     try {
                                         $inObj = [ordered] @{
@@ -50,10 +50,9 @@ function Get-AbrUploadIdenityProviderMeta {
                                             'Certificate Chain PEM' = $ExtMetadataSetting.certificateChainAndKeyWrapper.certChainPem
                                         }
                                         $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                        }
-                                        catch {
-                                            Write-PscriboMessage -IsWarning $_.Exception.Message
-                                        }
+                                    } catch {
+                                        Write-PScriboMessage -IsWarning $_.Exception.Message
+                                    }
 
                                     $TableParams = @{
                                         Name = "Identity Provider Metadata Settings - $($($UAGServer).split('.')[0].ToUpper())"
@@ -69,9 +68,8 @@ function Get-AbrUploadIdenityProviderMeta {
                         }
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

@@ -22,7 +22,7 @@ function Get-AbrOSCSPSetting {
 
     begin {
         Write-PScriboMessage "OCSP Settings InfoLevel set at $($InfoLevel.UAG.IdentityBridgeingSettings)."
-        Write-PscriboMessage "Collecting UAG OCSP Settings information."
+        Write-PScriboMessage "Collecting UAG OCSP Settings information."
     }
 
     process {
@@ -30,18 +30,18 @@ function Get-AbrOSCSPSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $OCSPs = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/ocsp/fileNames" -Credential $Credential
-                } else {$OCSPs = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/ocsp/fileNames" -Credential $Credential}
+                } else { $OCSPs = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/authmethod/ocsp/fileNames" -Credential $Credential }
                 if ($OCSPs.ocspSet) {
-                    section -Style Heading4 "OCSP Settings" {
+                    Section -Style Heading4 "OCSP Settings" {
                         Paragraph "The following section will provide details onOCSP Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
 
-                        foreach($OCSP in $OCSPs.ocspSet){
-                            If($OCSP){
+                        foreach ($OCSP in $OCSPs.ocspSet) {
+                            If ($OCSP) {
 
                                 $trimmedOCSP = ($OCSP.Split(',')[0]) -replace 'CN=', ''
 
-                                section -Style Heading5 "OCSP Settings - $($trimmedOCSP)" {
+                                Section -Style Heading5 "OCSP Settings - $($trimmedOCSP)" {
                                     $OutObj = @()
 
                                     try {
@@ -49,10 +49,9 @@ function Get-AbrOSCSPSetting {
                                             "OCSP Set File Name" = $OCSP
                                         }
                                         $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                        }
-                                        catch {
-                                            Write-PscriboMessage -IsWarning $_.Exception.Message
-                                        }
+                                    } catch {
+                                        Write-PScriboMessage -IsWarning $_.Exception.Message
+                                    }
 
                                     $TableParams += @{
                                         Name = "OCSP Settings - $($trimmedOCSP)"
@@ -68,9 +67,8 @@ function Get-AbrOSCSPSetting {
                         }
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

@@ -22,7 +22,7 @@ function Get-AbrNetworkSetting {
 
     begin {
         Write-PScriboMessage "Network Settings InfoLevel set at $($InfoLevel.UAG.AuthenticationSettings)."
-        Write-PscriboMessage "Collecting Network Settings information."
+        Write-PScriboMessage "Collecting Network Settings information."
     }
 
     process {
@@ -30,19 +30,19 @@ function Get-AbrNetworkSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $NICSettings = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/nic" -Credential $Credential
-                } else {$NICSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/nic" -Credential $Credential}
+                } else { $NICSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/nic" -Credential $Credential }
                 if ($NICSettings) {
 
                     $OutObj = @()
-                    section -Style Heading4 "Network Settings" {
+                    Section -Style Heading4 "Network Settings" {
                         Paragraph "The following section will provide details for Network Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
-                        foreach($NICSetting in $NICSettings.nicSettingsList) {
-                            section -Style Heading4 "Network Settings -  $($NICSetting.nic)" {
+                        foreach ($NICSetting in $NICSettings.nicSettingsList) {
+                            Section -Style Heading4 "Network Settings -  $($NICSetting.nic)" {
                                 $CustomConfig = $NICSetting.customConfig | Out-String
-                                if($null -ne $NICSetting.ipv4StaticRoutes) {
+                                if ($null -ne $NICSetting.ipv4StaticRoutes) {
                                     $StaticRoutes = $NICSetting.ipv4StaticRoutes -join "`n"
-                                }else { $StaticRoutes = $null}
+                                } else { $StaticRoutes = $null }
 
                                 try {
                                     $inObj = [ordered] @{
@@ -55,10 +55,9 @@ function Get-AbrNetworkSetting {
                                         "Custom Configuration" = $CustomConfig
                                     }
                                     $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                    }
-                                    catch {
-                                        Write-PscriboMessage -IsWarning $_.Exception.Message
-                                    }
+                                } catch {
+                                    Write-PScriboMessage -IsWarning $_.Exception.Message
+                                }
 
                                 $TableParams += @{
                                     Name = "Network Settings - $($NICSetting.nic)"
@@ -73,9 +72,8 @@ function Get-AbrNetworkSetting {
                         }
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

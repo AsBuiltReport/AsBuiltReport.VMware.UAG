@@ -16,26 +16,25 @@ function ConvertTo-TextYN {
     [CmdletBinding()]
     [OutputType([String])]
     Param
-        (
+    (
         [Parameter (
             Position = 0,
             Mandatory)]
-            [AllowEmptyString()]
-            [string]
-            $TEXT
-        )
+        [AllowEmptyString()]
+        [string]
+        $TEXT
+    )
 
-    switch ($TEXT)
-        {
-            "" {"--"}
-            $Null {"--"}
-            "True" {"Yes"; break}
-            "False" {"No"; break}
-            default {$TEXT}
-        }
-    } # end
+    switch ($TEXT) {
+        "" { "--" }
+        $Null { "--" }
+        "True" { "Yes"; break }
+        "False" { "No"; break }
+        default { $TEXT }
+    }
+} # end
 function Get-UnixDate ($UnixDate) {
-        <#
+    <#
     .SYNOPSIS
     Used by As Built Report to convert Date to a more nice format.
     .DESCRIPTION
@@ -69,23 +68,23 @@ function ConvertTo-EmptyToFiller {
     [CmdletBinding()]
     [OutputType([String])]
     Param
-        (
+    (
         [Parameter (
             Position = 0,
             Mandatory)]
-            [AllowEmptyString()]
-            [string]
-            $TEXT
-        )
+        [AllowEmptyString()]
+        [string]
+        $TEXT
+    )
 
     switch ($TEXT) {
-            "" {"-"; break}
-            $Null {"-"; break}
-            "True" {"Yes"; break}
-            "False" {"No"; break}
-            default {$TEXT}
-        }
-    } # end
+        "" { "-"; break }
+        $Null { "-"; break }
+        "True" { "Yes"; break }
+        "False" { "No"; break }
+        default { $TEXT }
+    }
+} # end
 
 function ConvertTo-VIobject {
     <#
@@ -105,18 +104,17 @@ function ConvertTo-VIobject {
     [CmdletBinding()]
     [OutputType([String])]
     Param
-        (
+    (
         [Parameter (
             Position = 0,
             Mandatory)]
-            [AllowEmptyString()]
-            $OBJECT
-        )
+        [AllowEmptyString()]
+        $OBJECT
+    )
 
-    if (get-view $OBJECT -ErrorAction SilentlyContinue| Select-Object -ExpandProperty Name -Unique) {
-        return get-view $OBJECT -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name -Unique
-    }
-    else {
+    if (Get-View $OBJECT -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name -Unique) {
+        return Get-View $OBJECT -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name -Unique
+    } else {
         return $OBJECT
     }
 } # end
@@ -144,17 +142,16 @@ function ConvertTo-HashToYN {
     )
 
     $result = [ordered] @{}
-    foreach($i in $inObj.GetEnumerator()) {
+    foreach ($i in $inObj.GetEnumerator()) {
         try {
             $result.add($i.Key, (ConvertTo-TextYN $i.Value))
-        }
-        catch {
-            Write-PscriboMessage -IsWarning "Unable to process $($i.key) values"
+        } catch {
+            Write-PScriboMessage -IsWarning "Unable to process $($i.key) values"
         }
     }
     if ($result) {
         return $result
-    } else {return $TEXT}
+    } else { return $TEXT }
 } # end
 
 function ConvertTo-FileSizeString {
@@ -174,16 +171,16 @@ function ConvertTo-FileSizeString {
         [Parameter (
             Position = 0,
             Mandatory)]
-            [int64]
-            $Size
-            )
+        [int64]
+        $Size
+    )
     switch ($Size) {
-        {$_ -gt 1TB} {[string]::Format("{0:0} TB", $Size / 1TB); break}
-        {$_ -gt 1GB} {[string]::Format("{0:0} GB", $Size / 1GB); break}
-        {$_ -gt 1MB} {[string]::Format("{0:0} MB", $Size / 1MB); break}
-        {$_ -gt 1KB} {[string]::Format("{0:0} KB", $Size / 1KB); break}
-        {$_ -gt 0} {[string]::Format("{0} B", $Size); break}
-        {$_ -eq 0} {"0 KB"; break}
-        default {"0 KB"}
+        { $_ -gt 1TB } { [string]::Format("{0:0} TB", $Size / 1TB); break }
+        { $_ -gt 1GB } { [string]::Format("{0:0} GB", $Size / 1GB); break }
+        { $_ -gt 1MB } { [string]::Format("{0:0} MB", $Size / 1MB); break }
+        { $_ -gt 1KB } { [string]::Format("{0:0} KB", $Size / 1KB); break }
+        { $_ -gt 0 } { [string]::Format("{0} B", $Size); break }
+        { $_ -eq 0 } { "0 KB"; break }
+        default { "0 KB" }
     }
 } # end >> function Format-FileSize

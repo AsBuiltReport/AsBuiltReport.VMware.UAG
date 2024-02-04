@@ -22,7 +22,7 @@ function Get-AbrKeyTabSetting {
 
     begin {
         Write-PScriboMessage "Keytab Settings InfoLevel set at $($InfoLevel.UAG.IdentityBridgeingSettings)."
-        Write-PscriboMessage "Collecting UAG Keytab Settings information."
+        Write-PScriboMessage "Collecting UAG Keytab Settings information."
     }
 
     process {
@@ -30,9 +30,9 @@ function Get-AbrKeyTabSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $KerberosKeyTab = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/kerberos/keytab" -Credential $Credential
-                } else {$KerberosKeyTab = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/kerberos/keytab" -Credential $Credential}
+                } else { $KerberosKeyTab = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/kerberos/keytab" -Credential $Credential }
                 if ($KerberosKeyTab) {
-                    section -Style Heading3 "Keytab Settings" {
+                    Section -Style Heading3 "Keytab Settings" {
                         Paragraph "The following section will provide details on Keytab Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
 
@@ -43,10 +43,9 @@ function Get-AbrKeyTabSetting {
                                 "Principal Name" = $KerberosKeyTab.principalName
                             }
                             $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                            }
-                            catch {
-                                Write-PscriboMessage -IsWarning $_.Exception.Message
-                            }
+                        } catch {
+                            Write-PScriboMessage -IsWarning $_.Exception.Message
+                        }
 
                         $TableParams = @{
                             Name = "Keytab Settings - $($($UAGServer).split('.')[0].ToUpper())"
@@ -60,9 +59,8 @@ function Get-AbrKeyTabSetting {
 
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

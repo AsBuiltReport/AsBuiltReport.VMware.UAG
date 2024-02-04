@@ -22,7 +22,7 @@ function Get-AbrSystemConfiguration {
 
     begin {
         Write-PScriboMessage "Edge Services InfoLevel set at $($InfoLevel.UAG.AdvancedSettings)."
-        Write-PscriboMessage "Collecting UAG Horizon Settings information."
+        Write-PScriboMessage "Collecting UAG Horizon Settings information."
     }
 
     process {
@@ -30,22 +30,22 @@ function Get-AbrSystemConfiguration {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $SystemSettings = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/system" -Credential $Credential
-                } else {$SystemSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/system" -Credential $Credential}
+                } else { $SystemSettings = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/system" -Credential $Credential }
                 if ($SystemSettings) {
-                    section -Style Heading4 "System Configuration" {
+                    Section -Style Heading4 "System Configuration" {
                         Paragraph "The following section will provide details on System Configuration Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
                         $OutObj = @()
 
-                        if($null -ne $SystemSettings.allowedHostHeaderValues) {
+                        if ($null -ne $SystemSettings.allowedHostHeaderValues) {
                             $HostHeaders = $SystemSettings.allowedHostHeaderValues -join "`n"
-                        }else { $HostHeaders = $null}
-                        if($null -ne $SystemSettings.ntpServers) {
+                        } else { $HostHeaders = $null }
+                        if ($null -ne $SystemSettings.ntpServers) {
                             $NTPSettings = $SystemSettings.ntpServers -join "`n"
-                        }else { $NTPSettings = $null}
-                        if($null -ne $SystemSettings.fallBackNtpServers) {
+                        } else { $NTPSettings = $null }
+                        if ($null -ne $SystemSettings.fallBackNtpServers) {
                             $fallBackNtpServers = $SystemSettings.fallBackNtpServers -join "`n"
-                        }else { $fallBackNtpServers = $null}
+                        } else { $fallBackNtpServers = $null }
 
 
                         $SMTPSettings = $SystemSettings.snmpSettings | Out-String
@@ -74,7 +74,7 @@ function Get-AbrSystemConfiguration {
                                 'TLS Named Groups' = $SystemSettings.tlsNamedGroups
                                 'TLS Signature Schemes' = $SystemSettings.tlsSignatureSchemes
                                 'TLS Port Sharing' = $SystemSettings.tlsPortSharingEnabled
-                                'Allowed Host Headers' =  $HostHeaders
+                                'Allowed Host Headers' = $HostHeaders
                                 'Health Check URL' = $SystemSettings.healthCheckUrl
                                 'HTTP Health Monitor' = $SystemSettings.enableHTTPHealthMonitor
                                 'Unrecognized Sessions Monitoring Enabled' = $SystemSettings.unrecognizedSessionsMonitoringEnabled
@@ -113,10 +113,9 @@ function Get-AbrSystemConfiguration {
 
                             }
                             $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                            }
-                            catch {
-                                Write-PscriboMessage -IsWarning $_.Exception.Message
-                            }
+                        } catch {
+                            Write-PScriboMessage -IsWarning $_.Exception.Message
+                        }
 
                         $TableParams = @{
                             Name = "System Configuration - $($($UAGServer).split('.')[0].ToUpper())"
@@ -129,9 +128,8 @@ function Get-AbrSystemConfiguration {
                         $OutObj | Table @TableParams
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

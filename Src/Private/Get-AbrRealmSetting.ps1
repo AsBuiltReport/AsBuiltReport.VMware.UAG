@@ -22,7 +22,7 @@ function Get-AbrRealmSetting {
 
     begin {
         Write-PScriboMessage "Realm Settings InfoLevel set at $($InfoLevel.UAG.IdentityBridgeingSettings)."
-        Write-PscriboMessage "Collecting UAG Realm Settings information."
+        Write-PScriboMessage "Collecting UAG Realm Settings information."
     }
 
     process {
@@ -30,20 +30,20 @@ function Get-AbrRealmSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $KerberosRealms = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/kerberos/realm" -Credential $Credential
-                } else {$KerberosRealms = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/kerberos/realm" -Credential $Credential}
+                } else { $KerberosRealms = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/kerberos/realm" -Credential $Credential }
                 if ($KerberosRealms.kerberosRealmSettingsList) {
-                    section -Style Heading4 "Realm Settings" {
+                    Section -Style Heading4 "Realm Settings" {
                         Paragraph "The following section will provide details on Realm Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
 
-                        Foreach($KerberosRealm in $KerberosRealms.kerberosRealmSettingsList){
-                            If($KerberosRealm){
-                                section -Style Heading5 "Realm Settings - $($KerberosRealm.Name)" {
+                        Foreach ($KerberosRealm in $KerberosRealms.kerberosRealmSettingsList) {
+                            If ($KerberosRealm) {
+                                Section -Style Heading5 "Realm Settings - $($KerberosRealm.Name)" {
                                     $OutObj = @()
 
                                     If ($KerberosRealm.noOfWRPsUsingThisRealm -like '-1') {
                                         $UsingThisRealm = 'Not in use'
-                                    }else {
+                                    } else {
                                         $UsingThisRealm = 'In use'
                                     }
                                     try {
@@ -54,10 +54,9 @@ function Get-AbrRealmSetting {
                                             'KDC In Use' = $UsingThisRealm
                                         }
                                         $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                        }
-                                        catch {
-                                            Write-PscriboMessage -IsWarning $_.Exception.Message
-                                        }
+                                    } catch {
+                                        Write-PScriboMessage -IsWarning $_.Exception.Message
+                                    }
 
                                     $TableParams = @{
                                         Name = "Realm Settings - $($KerberosRealm.Name)"
@@ -73,9 +72,8 @@ function Get-AbrRealmSetting {
                         }
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }

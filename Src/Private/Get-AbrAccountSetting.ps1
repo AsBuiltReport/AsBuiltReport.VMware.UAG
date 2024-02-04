@@ -22,7 +22,7 @@ function Get-AbrAccountSetting {
 
     begin {
         Write-PScriboMessage "Account Settings InfoLevel set at $($InfoLevel.UAG.AdvancedSettings)."
-        Write-PscriboMessage "Collecting UAG Account Settings information."
+        Write-PScriboMessage "Collecting UAG Account Settings information."
     }
 
     process {
@@ -30,19 +30,20 @@ function Get-AbrAccountSetting {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $adminusers = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential
-                    try {$AdminSAMLAuth = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential}
-                    catch {Write-PScriboMessage -IsWarning "Unable to collect UAG Account Settings information"}
-                } else {$adminusers = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers" -Credential $Credential
-                    try {$AdminSAMLAuth = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential}
-                    catch {Write-PScriboMessage -IsWarning "Unable to collect UAG Account Settings information"}
+                    try { $AdminSAMLAuth = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential }
+                    catch { Write-PScriboMessage -IsWarning "Unable to collect UAG Account Settings information" }
+                } else {
+                    $adminusers = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers" -Credential $Credential
+                    try { $AdminSAMLAuth = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential }
+                    catch { Write-PScriboMessage -IsWarning "Unable to collect UAG Account Settings information" }
                 }
                 if ($adminusers.adminUsersList) {
-                    section -Style Heading4 "Account Settings" {
+                    Section -Style Heading4 "Account Settings" {
                         Paragraph "The following section will provide details on Account Settings on the UAG - $($($UAGServer).split('.')[0].ToUpper())."
                         BlankLine
-                        foreach($adminuser in $adminusers.adminUsersList){
-                            if($adminuser){
-                                section -Style Heading5 "Account Settings - $($adminuser.name)" {
+                        foreach ($adminuser in $adminusers.adminUsersList) {
+                            if ($adminuser) {
+                                Section -Style Heading5 "Account Settings - $($adminuser.name)" {
                                     $OutObj = @()
 
                                     try {
@@ -56,10 +57,9 @@ function Get-AbrAccountSetting {
                                             'User Type' = $adminuser.userType
                                         }
                                         $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                        }
-                                        catch {
-                                            Write-PscriboMessage -IsWarning $_.Exception.Message
-                                        }
+                                    } catch {
+                                        Write-PScriboMessage -IsWarning $_.Exception.Message
+                                    }
 
                                     $TableParams += @{
                                         Name = "Account Settings - $($adminuser.name)"
@@ -74,8 +74,8 @@ function Get-AbrAccountSetting {
                             }
                         }
 
-                        if($AdminSAMLAuth){
-                            section -Style Heading4 "SAML Auth Settings - $($adminuser.name)" {
+                        if ($AdminSAMLAuth) {
+                            Section -Style Heading4 "SAML Auth Settings - $($adminuser.name)" {
                                 $OutObj = @()
 
                                 try {
@@ -86,10 +86,9 @@ function Get-AbrAccountSetting {
                                         'Static SP Entity ID' = $AdminSAMLAuth.spEntityId
                                     }
                                     $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
-                                    }
-                                    catch {
-                                        Write-PscriboMessage -IsWarning $_.Exception.Message
-                                    }
+                                } catch {
+                                    Write-PScriboMessage -IsWarning $_.Exception.Message
+                                }
 
                                 $TableParams = @{
                                     Name = "Account Settings - $($adminuser.name)"
@@ -105,9 +104,8 @@ function Get-AbrAccountSetting {
 
                     }
                 }
-            }
-            catch {
-                Write-PscriboMessage -IsWarning $_.Exception.Message
+            } catch {
+                Write-PScriboMessage -IsWarning $_.Exception.Message
             }
         }
     }
