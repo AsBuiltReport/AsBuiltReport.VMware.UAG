@@ -33,4 +33,5 @@ function Get-RequiredModule {
             throw "VMware PowerCLI $Version or higher is required to run the VMware UAG As Built Report. Run 'Update-Module -Name $Name -MinimumVersion $Version' to update the required modules."
         }
     }
+    end {}
 }
