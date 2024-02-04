@@ -70,17 +70,9 @@
     Get-RequiredModule -Name 'VMware.PowerCLI' -Version '12.7'
 
     # Import JSON Configuration for Options and InfoLevel
-    $Report = $ReportConfig.Report
-    $InfoLevel = $ReportConfig.InfoLevel
-    $Options = $ReportConfig.Options
-
-    $RESTAPIUser = $Credential.UserName
-    $RESTAPIPassword = $Credential.GetNetworkCredential().password
-
-    $AppVolRestCreds = @{
-        username = $RESTAPIUser
-        password = $RESTAPIPassword
-    }
+    $script:Report = $ReportConfig.Report
+    $script:InfoLevel = $ReportConfig.InfoLevel
+    $script:Options = $ReportConfig.Options
 
     foreach ($UAGServer in $Target) {
         $UAGServerName = $UAGServer.ToString()
