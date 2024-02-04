@@ -10,7 +10,7 @@
 ### Changed
 
 - The Report was migrated to the new structure format
-  - Improved error handling
+- Improved error handling
 
 ## [0.1.0] - 2020-07-06
 
