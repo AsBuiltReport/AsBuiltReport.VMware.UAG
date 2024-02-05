@@ -47,10 +47,6 @@ function Get-AbrEdgeServiceSetting {
                                 if ($null -ne $EdgeServiceSetting.customExecutableList) {
                                     $clientCustomExecutablesData = $EdgeServiceSetting.customExecutableList -join "`n"
                                 } else { $clientCustomExecutablesData = $null }
-                                if ($null -ne $EdgeServiceSetting.customExecutableList) {
-                                    $SAMLAudiences = $EdgeServiceSetting.customExecutableList -join "`n"
-                                } else { $SAMLAudiences = $null }
-
                                 $securityHeaders = $EdgeServiceSetting.securityHeaders | Out-String
 
                                 try {
@@ -197,7 +193,7 @@ function Get-AbrEdgeServiceSetting {
                                         'Outbound Proxy Port' = $EdgeServiceSetting.outboundProxyPort
                                         'Outbound Proxy Username' = $EdgeServiceSetting.outboundProxyUsername
                                         'Enable NTLM Authentication' = $EdgeServiceSetting.ntlmAuthentication
-                                        'Trusted Certificates' = $trustedCertificatesData
+                                        'Trusted Certificates' = $trustedCertificates
                                         'Host Entries' = $hostEntriesDataTunnel
                                     }
                                     $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)

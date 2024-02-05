@@ -29,11 +29,9 @@ function Get-AbrTLSServerCertificateSetting {
         if ($InfoLevel.UAG.AdvancedSettings -ge 1) {
             try {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
-                    $ServerCertConfig = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl" -Credential $Credential
                     $ServerCertAdmin = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl/admin" -Credential $Credential
                     $ServerCertEndUser = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl/end_User" -Credential $Credential
                 } else {
-                    $ServerCertConfig = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl" -Credential $Credential
                     $ServerCertAdmin = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl/admin" -Credential $Credential
                     $ServerCertEndUser = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/certs/ssl/end_User" -Credential $Credential
                 }
