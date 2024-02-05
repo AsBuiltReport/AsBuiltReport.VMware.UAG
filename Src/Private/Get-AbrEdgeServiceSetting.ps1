@@ -193,7 +193,7 @@ function Get-AbrEdgeServiceSetting {
                                         'Outbound Proxy Port' = $EdgeServiceSetting.outboundProxyPort
                                         'Outbound Proxy Username' = $EdgeServiceSetting.outboundProxyUsername
                                         'Enable NTLM Authentication' = $EdgeServiceSetting.ntlmAuthentication
-                                        'Trusted Certificates' = $trustedCertificatesData
+                                        'Trusted Certificates' = $trustedCertificates
                                         'Host Entries' = $hostEntriesDataTunnel
                                     }
                                     $OutObj = [pscustomobject](ConvertTo-HashToYN $inObj)
