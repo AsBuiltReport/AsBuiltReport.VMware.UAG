@@ -47,10 +47,6 @@ function Get-AbrEdgeServiceSetting {
                                 if ($null -ne $EdgeServiceSetting.customExecutableList) {
                                     $clientCustomExecutablesData = $EdgeServiceSetting.customExecutableList -join "`n"
                                 } else { $clientCustomExecutablesData = $null }
-                                if ($null -ne $EdgeServiceSetting.customExecutableList) {
-                                    $SAMLAudiences = $EdgeServiceSetting.customExecutableList -join "`n"
-                                } else { $SAMLAudiences = $null }
-
                                 $securityHeaders = $EdgeServiceSetting.securityHeaders | Out-String
 
                                 try {
