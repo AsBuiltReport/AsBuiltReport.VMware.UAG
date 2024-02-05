@@ -1,6 +1,6 @@
 # :arrows_clockwise: VMware UAG As Built Report Changelog
 
-## [1.1.0] - 2024-2-2
+## [1.1.0] - 2024-02-04
 
 ### Added
 
@@ -10,7 +10,7 @@
 ### Changed
 
 - The Report was migrated to the new structure format
-  - Improved error handling
+- Improved error handling
 
 ## [0.1.0] - 2020-07-06
 

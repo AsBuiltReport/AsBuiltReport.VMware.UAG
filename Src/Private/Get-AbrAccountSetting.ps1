@@ -31,11 +31,11 @@ function Get-AbrAccountSetting {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $adminusers = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential
                     try { $AdminSAMLAuth = Invoke-RestMethod -SkipCertificateCheck -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential }
-                    catch { Write-PScriboMessage -IsWarning "Unable to collect UAG Account Settings information" }
+                    catch { Write-PScriboMessage -IsWarning "Unable to collect UAG Account SAML Auth Settings information" }
                 } else {
                     $adminusers = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers" -Credential $Credential
                     try { $AdminSAMLAuth = Invoke-RestMethod -Method Get -ContentType application/json -Uri "https://$($UAGServer):9443/rest/v1/config/adminusers/samlAuth" -Credential $Credential }
-                    catch { Write-PScriboMessage -IsWarning "Unable to collect UAG Account Settings information" }
+                    catch { Write-PScriboMessage -IsWarning "Unable to collect UAG Account SAML Auth Settings information" }
                 }
                 if ($adminusers.adminUsersList) {
                     Section -Style Heading4 "Account Settings" {
